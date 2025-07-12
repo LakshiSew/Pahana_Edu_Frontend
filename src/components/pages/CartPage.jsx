@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { X, Minus, Plus } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { X, Minus, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const API_URL = "http://localhost:8080";
 
@@ -17,8 +17,8 @@ const CartPage = () => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
     if (!token || !userId) {
-      toast.warn('Please log in to view your cart', {
-        position: 'top-right',
+      toast.warn("Please log in to view your cart", {
+        position: "top-right",
         autoClose: 3000,
       });
       navigate("/login");
@@ -37,14 +37,14 @@ const CartPage = () => {
           cartItemsRaw.map(async (item) => {
             try {
               let product;
-              if (item.productType === 'Book') {
+              if (item.productType === "Book") {
                 product = await axios.get(
                   `${API_URL}/auth/getbookbyid/${item.productId}`,
                   {
                     headers: { Authorization: `Bearer ${token}` },
                   }
                 );
-              } else if (item.productType === 'Accessory') {
+              } else if (item.productType === "Accessory") {
                 product = await axios.get(
                   `${API_URL}/auth/getaccessorybyid/${item.productId}`,
                   {
@@ -52,7 +52,9 @@ const CartPage = () => {
                   }
                 );
               } else {
-                console.warn(`Invalid product type for item: ${item.productId}`);
+                console.warn(
+                  `Invalid product type for item: ${item.productId}`
+                );
                 return null;
               }
               const discount = product.data.discount || 0;
@@ -61,7 +63,7 @@ const CartPage = () => {
                 id: item.id,
                 productId: item.productId,
                 name:
-                  item.productType === 'Book'
+                  item.productType === "Book"
                     ? product.data.title
                     : product.data.itemName,
                 price: discountedPrice, // Apply discount
@@ -69,7 +71,7 @@ const CartPage = () => {
                 discount: discount, // Store discount percentage
                 quantity: item.quantity,
                 productType: item.productType,
-                image: product.data.image || 'https://via.placeholder.com/80',
+                image: product.data.image || "https://via.placeholder.com/80",
               };
             } catch (err) {
               console.error(
@@ -85,19 +87,19 @@ const CartPage = () => {
           (item) => item && item.name && item.price
         );
         if (validItems.length === 0) {
-          setError('Cart contains invalid items');
-          console.warn('All cart items filtered out due to missing data');
+          setError("Cart empty");
+          console.warn("All cart items filtered out due to missing data");
         }
         setCartItems(validItems);
         setLoading(false);
       } catch (err) {
-        console.error('Cart fetch error:', err.response?.data || err.message);
+        console.error("Cart fetch error:", err.response?.data || err.message);
         setError(
           err.response?.status === 401
-            ? 'Session expired. Please log in again.'
-            : err.message || 'Failed to load cart.'
+            ? "Session expired. Please log in again."
+            : err.message || "Failed to load cart."
         );
-        if (err.response?.status === 401) navigate('/login');
+        if (err.response?.status === 401) navigate("/login");
         setLoading(false);
       }
     };
@@ -109,28 +111,39 @@ const CartPage = () => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
     try {
-      const item = cartItems.find(item => item.id === id);
+      const item = cartItems.find((item) => item.id === id);
       const newQuantity = Math.max(item.quantity + delta, 1);
       const response = await axios.put(
         `${API_URL}/update`,
-        { userId, productId: item.productId, productType: item.productType, quantity: newQuantity },
+        {
+          userId,
+          productId: item.productId,
+          productType: item.productType,
+          quantity: newQuantity,
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setCartItems(prev =>
-        prev.map(item =>
+      setCartItems((prev) =>
+        prev.map((item) =>
           item.id === id ? { ...item, quantity: newQuantity } : item
         )
       );
-      toast.success('Quantity updated', { position: 'top-right', autoClose: 2000 });
+      toast.success("Quantity updated", {
+        position: "top-right",
+        autoClose: 2000,
+      });
     } catch (err) {
-      console.error('Quantity update error:', err.response?.data || err.message);
+      console.error(
+        "Quantity update error:",
+        err.response?.data || err.message
+      );
       toast.error(
         err.response?.status === 401
-          ? 'Session expired. Please log in again.'
-          : err.message || 'Failed to update quantity.',
-        { position: 'top-right', autoClose: 3000 }
+          ? "Session expired. Please log in again."
+          : err.message || "Failed to update quantity.",
+        { position: "top-right", autoClose: 3000 }
       );
-      if (err.response?.status === 401) navigate('/login');
+      if (err.response?.status === 401) navigate("/login");
     }
   };
 
@@ -141,17 +154,20 @@ const CartPage = () => {
       await axios.delete(`${API_URL}/remove/${userId}/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setCartItems(prev => prev.filter(item => item.id !== id));
-      toast.success('Item removed from cart', { position: 'top-right', autoClose: 2000 });
+      setCartItems((prev) => prev.filter((item) => item.id !== id));
+      toast.success("Item removed from cart", {
+        position: "top-right",
+        autoClose: 2000,
+      });
     } catch (err) {
-      console.error('Remove item error:', err.response?.data || err.message);
+      console.error("Remove item error:", err.response?.data || err.message);
       toast.error(
         err.response?.status === 401
-          ? 'Session expired. Please log in again.'
-          : err.message || 'Failed to remove item.',
-        { position: 'top-right', autoClose: 3000 }
+          ? "Session expired. Please log in again."
+          : err.message || "Failed to remove item.",
+        { position: "top-right", autoClose: 3000 }
       );
-      if (err.response?.status === 401) navigate('/login');
+      if (err.response?.status === 401) navigate("/login");
     }
   };
 
@@ -163,16 +179,19 @@ const CartPage = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCartItems([]);
-      toast.success('Cart cleared successfully', { position: 'top-right', autoClose: 2000 });
+      toast.success("Cart cleared successfully", {
+        position: "top-right",
+        autoClose: 2000,
+      });
     } catch (err) {
-      console.error('Clear cart error:', err.response?.data || err.message);
+      console.error("Clear cart error:", err.response?.data || err.message);
       toast.error(
         err.response?.status === 401
-          ? 'Session expired. Please log in again.'
-          : err.message || 'Failed to clear cart.',
-        { position: 'top-right', autoClose: 3000 }
+          ? "Session expired. Please log in again."
+          : err.message || "Failed to clear cart.",
+        { position: "top-right", autoClose: 3000 }
       );
-      if (err.response?.status === 401) navigate('/login');
+      if (err.response?.status === 401) navigate("/login");
     }
   };
 
@@ -181,11 +200,17 @@ const CartPage = () => {
     .toFixed(2);
 
   if (loading) {
-    return <div className="text-center text-gray-600 font-sans text-lg">Loading...</div>;
+    return (
+      <div className="text-center text-gray-600 font-sans text-lg">
+        Loading...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center text-red-600 font-sans text-lg">{error}</div>;
+    return (
+      <div className="text-center text-red-600 font-sans text-lg">{error}</div>
+    );
   }
 
   return (
@@ -201,18 +226,35 @@ const CartPage = () => {
             </div>
           ) : (
             <>
-              {cartItems.map(item => (
-                <div key={item.id} className="flex gap-4 items-center border-b pb-4">
-                  <button onClick={() => handleRemove(item.id)} className="text-gray-500 hover:text-red-500">
+              {cartItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex gap-4 items-center border-b pb-4"
+                >
+                  <button
+                    onClick={() => handleRemove(item.id)}
+                    className="text-gray-500 hover:text-red-500"
+                  >
                     <X className="w-5 h-5" />
                   </button>
-                  <img src={item.image || 'https://via.placeholder.com/80'} alt={item.name || 'Product'} className="w-20 h-24 object-cover rounded" />
+                  <img
+                    src={item.image || "https://via.placeholder.com/80"}
+                    alt={item.name || "Product"}
+                    className="w-20 h-24 object-cover rounded"
+                  />
                   <div className="flex-1">
-                    <h4 className="font-semibold">{item.name || 'Unknown Product'}</h4>
+                    <h4 className="font-semibold">
+                      {item.name || "Unknown Product"}
+                    </h4>
                     <div className="text-sm mt-1">
-                      Price: <span className="font-medium text-gray-800">Rs. {item.price.toFixed(2)}</span>
+                      Price:{" "}
+                      <span className="font-medium text-gray-800">
+                        Rs. {item.price.toFixed(2)}
+                      </span>
                       {item.discount > 0 && (
-                        <span className="text-gray-500 line-through ml-2">Rs. {item.originalPrice.toFixed(2)}</span>
+                        <span className="text-gray-500 line-through ml-2">
+                          Rs. {item.originalPrice.toFixed(2)}
+                        </span>
                       )}
                     </div>
                     <div className="flex items-center mt-2 space-x-2">
@@ -234,7 +276,9 @@ const CartPage = () => {
                   <div className="font-semibold text-right w-24">
                     Rs. {(item.price * item.quantity).toFixed(2)}
                     {item.discount > 0 && (
-                      <span className="text-gray-500 line-through block">Rs. {(item.originalPrice * item.quantity).toFixed(2)}</span>
+                      <span className="text-gray-500 line-through block">
+                        Rs. {(item.originalPrice * item.quantity).toFixed(2)}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -266,7 +310,12 @@ const CartPage = () => {
           <div className="mt-4">
             <span className="block font-medium mb-2">Shipping</span>
             <label className="block mb-2">
-              <input type="radio" name="shipping" defaultChecked className="mr-2" />
+              <input
+                type="radio"
+                name="shipping"
+                defaultChecked
+                className="mr-2"
+              />
               Free shipping (3–5 days)
             </label>
             <label className="block">
@@ -294,3 +343,4 @@ const CartPage = () => {
 };
 
 export default CartPage;
+

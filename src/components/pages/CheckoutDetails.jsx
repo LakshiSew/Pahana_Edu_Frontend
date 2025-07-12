@@ -498,3 +498,4 @@ const CheckoutDetails = () => {
 };
 
 export default CheckoutDetails;
+
