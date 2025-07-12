@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Book, User, Mail, Phone, Send } from 'lucide-react';
+import { Book, User, Mail, Send } from 'lucide-react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,7 +11,7 @@ const SuggestABook = () => {
     title: '',
     author: '',
     email: '',
-    mobile: ''
+    name: ''
   });
   const [loading, setLoading] = useState(false);
 
@@ -32,8 +32,8 @@ const SuggestABook = () => {
       setLoading(false);
       return;
     }
-    if (!/^[0-9]{10,15}$/.test(form.mobile)) {
-      toast.error('Please enter a valid mobile number (10-15 digits)', {
+    if (!form.name.trim()) {
+      toast.error('Please enter your name', {
         position: 'top-right',
         autoClose: 3000,
       });
@@ -43,7 +43,7 @@ const SuggestABook = () => {
 
     try {
       const suggestion = {
-        name: form.mobile, // Using mobile as name (adjust if customer name is needed)
+        name: form.name,
         email: form.email,
         bookTitle: form.title,
         authorName: form.author,
@@ -56,7 +56,7 @@ const SuggestABook = () => {
         position: 'top-right',
         autoClose: 3000,
       });
-      setForm({ title: '', author: '', email: '', mobile: '' });
+      setForm({ title: '', author: '', email: '', name: '' });
     } catch (err) {
       console.error('Failed to submit suggestion:', err.response?.data || err.message);
       toast.error(
@@ -139,21 +139,20 @@ const SuggestABook = () => {
             />
           </div>
 
-          {/* Mobile Number */}
+          {/* Your Name */}
           <div>
             <label className="block text-sm font-medium mb-1 flex items-center gap-1">
-              <Phone className="w-4 h-4" />
-              Mobile Number
+              <User className="w-4 h-4" />
+              Your Name
             </label>
             <input
-              type="tel"
-              name="mobile"
-              value={form.mobile}
+              type="text"
+              name="name"
+              value={form.name}
               onChange={handleChange}
               required
-              pattern="[0-9]{10,15}"
               className="w-full bg-white/80 text-gray-800 border-none rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-600"
-              placeholder="Enter your mobile number"
+              placeholder="Enter your name"
             />
           </div>
 
