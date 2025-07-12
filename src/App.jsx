@@ -68,7 +68,7 @@ function App() {
                <TopCategory/>
                <Product/>
                <BookApp/>
-               {/* <Feedback/> */}
+               <Feedback/>
              
           
               </>
