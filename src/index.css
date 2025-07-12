@@ -1,0 +1,94 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+
+@plugin "daisyui";
+
+@theme {
+    --font-inter: "Inter", sans-serif;
+}
+
+
+
+/* Apply Inter font globally */
+html, body, #root {
+  font-family: 'Inter', sans-serif;
+  background-color: white;
+  color: black;
+}
+
+
+.slick-prev:before,
+  .slick-next:before {
+    color: #facc15 !important; /* Tailwind yellow-400 */
+    font-size: 28px !important;
+    opacity: 1 !important;
+  }
+
+  .slick-prev:hover:before,
+  .slick-next:hover:before {
+    color: #fbbf24 !important; /* Tailwind yellow-500 */
+  }
+
+  /* Move the left arrow further left (adds space to the right) */
+  .slick-prev {
+    left: -40px !important;
+    z-index: 10;
+  }
+
+  /* Move the right arrow further right (adds space to the left) */
+  .slick-next {
+    right: -40px !important;
+    z-index: 10;
+  }
+
+  .star-animation {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  background-color: gold;
+  z-index: 1000;
+}
+
+.cart-icon.shake {
+  animation: shakeCart 0.4s ease-in-out forwards;
+}
+
+@keyframes shakeCart {
+  25% { transform: translateX(6px); }
+  50% { transform: translateX(-4px); }
+  75% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+
+header {
+  background: linear-gradient(to right, #2563eb, #1e40af);
+}
+
+.cart-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.cart-icon:hover {
+  transform: scale(1.1);
+}
+
