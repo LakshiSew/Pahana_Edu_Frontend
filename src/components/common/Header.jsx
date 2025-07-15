@@ -392,7 +392,6 @@
 
 // export default Header;
 
-
 import { useState, useEffect, useRef } from "react";
 import {
   Check,
@@ -455,7 +454,9 @@ const Header = ({ showOnlyNav = false }) => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(`${API_URL}/auth/getallcategories`);
-        const activeCategories = response.data.filter(category => category.status === "Active");
+        const activeCategories = response.data.filter(
+          (category) => category.status === "Active"
+        );
         setCategories(activeCategories);
         setLoading(false);
       } catch (err) {
@@ -504,7 +505,7 @@ const Header = ({ showOnlyNav = false }) => {
   };
 
   const handleCartClick = () => {
-    navigate('/cartpage');
+    navigate("/cartpage");
   };
 
   const handleLogout = () => {
@@ -520,8 +521,22 @@ const Header = ({ showOnlyNav = false }) => {
     return (
       <nav className="bg-yellow-500 text-white px-4 py-3 flex justify-between items-center shadow-md font-sans w-full max-w-full sticky top-0 z-50">
         <div className="flex items-center gap-6 text-md font-medium">
-          {["/", "/productList", "/newArraivals", "/offer", "suggestBook", "/about"].map((path, i) => {
-            const labels = ["Home", "Products", "New Arrivals", "Offers", "Suggest Book", "About"];
+          {[
+            "/",
+            "/productList",
+            "/newArraivals",
+            "/offer",
+            "suggestBook",
+            "/about",
+          ].map((path, i) => {
+            const labels = [
+              "Home",
+              "Products",
+              "New Arrivals",
+              "Offers",
+              "Suggest Book",
+              "About",
+            ];
             return (
               <NavLink
                 key={path}
@@ -547,12 +562,16 @@ const Header = ({ showOnlyNav = false }) => {
             {isCategoryOpen && (
               <ul className="absolute left-0 top-10 bg-white text-gray-800 rounded-md shadow-lg w-40 max-h-60 overflow-y-auto z-50 border border-yellow-200">
                 {loading ? (
-                  <li className="px-3 py-1 text-sm text-gray-500">Loading...</li>
+                  <li className="px-3 py-1 text-sm text-gray-500">
+                    Loading...
+                  </li>
                 ) : categories.length > 0 ? (
                   categories.map((category) => (
                     <li key={category.categoryId}>
                       <button
-                        onClick={(e) => handleCategoryClick(category.categoryName, e)}
+                        onClick={(e) =>
+                          handleCategoryClick(category.categoryName, e)
+                        }
                         className="block w-full text-left px-3 py-1 text-sm text-black hover:bg-yellow-100 hover:text-yellow-600 hover:underline cursor-pointer transition-colors duration-200"
                       >
                         {category.categoryName}
@@ -560,7 +579,9 @@ const Header = ({ showOnlyNav = false }) => {
                     </li>
                   ))
                 ) : (
-                  <li className="px-3 py-1 text-sm text-gray-500">No categories available</li>
+                  <li className="px-3 py-1 text-sm text-gray-500">
+                    No categories available
+                  </li>
                 )}
               </ul>
             )}
@@ -708,14 +729,14 @@ const Header = ({ showOnlyNav = false }) => {
 
       <div className="flex items-center bg-yellow-400 w-full h-16">
         <div className="w-full max-w-full flex justify-between items-center px-4 md:pr-2 md:pl-8">
-          <div className="flex items-center gap-6">
+          {/* <div className="flex items-center gap-6">
             <div className="relative" ref={categoryRef}>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsCategoryOpen(!isCategoryOpen);
                 }}
-                className="flex items-center gap-2 bg-gradient-to-r from-yellow-600 to-amber-800 text-white px-4 py-1.5 rounded-xl hover:from-yellow-700 hover:to-amber-900 transition-colors duration-300 shadow-md"
+                className="flex items-center gap-2 bg-gradient-to-r from-yellow-600 to-amber-800 text-white px-4 py-1.5 rounded-xl hover:from-yellow-700 hover:to-amber-900 transition-colors duration-300 shadow-md text-decoration-none"
               >
                 <Menu className="h-5 w-5" /> All Categories
               </button>
@@ -758,7 +779,79 @@ const Header = ({ showOnlyNav = false }) => {
                 );
               })}
             </nav>
+          </div> */}
+          <div className="flex items-center gap-6">
+            <div className="relative" ref={categoryRef}>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsCategoryOpen(!isCategoryOpen);
+                }}
+                className="flex items-center gap-2 bg-gradient-to-r from-yellow-600 to-amber-800 text-white px-4 py-1.5 rounded-xl hover:from-yellow-700 hover:to-amber-900 transition-colors duration-300 shadow-md"
+              >
+                <Menu className="h-5 w-5" /> All Categories
+              </button>
+              {isCategoryOpen && (
+                <ul className="absolute left-0 top-10 bg-white text-gray-800 rounded-md shadow-lg w-40 max-h-60 overflow-y-auto z-50 border border-yellow-200">
+                  {loading ? (
+                    <li className="px-3 py-1 text-sm text-gray-500">
+                      Loading...
+                    </li>
+                  ) : categories.length > 0 ? (
+                    categories.map((category) => (
+                      <li key={category.categoryId}>
+                        <button
+                          onClick={(e) =>
+                            handleCategoryClick(category.categoryName, e)
+                          }
+                          className="block w-full text-left px-3 py-1 text-sm text-black hover:bg-yellow-100 hover:text-yellow-600 focus:outline-none"
+                        >
+                          {category.categoryName}
+                        </button>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="px-3 py-1 text-sm text-gray-500">
+                      No categories available
+                    </li>
+                  )}
+                </ul>
+              )}
+            </div>
+            <nav className="flex flex-wrap items-center gap-4 md:gap-6">
+              {[
+                "/",
+                "/productList",
+                "/newArraivals",
+                "/offer",
+                "suggestBook",
+                "/about",
+              ].map((path, i) => {
+                const labels = [
+                  "Home",
+                  "Products",
+                  "New Arrivals",
+                  "Offers",
+                  "Suggest Book",
+                  "About",
+                ];
+                return (
+                  <NavLink
+                    key={path}
+                    to={path}
+                    className={({ isActive }) =>
+                      `text-sm font-medium capitalize ${
+                        isActive ? "text-yellow-600 font-bold" : "text-gray-800"
+                      } hover:text-yellow-600 focus:outline-none transition-colors duration-300`
+                    }
+                  >
+                    {labels[i]}
+                  </NavLink>
+                );
+              })}
+            </nav>
           </div>
+
           <div className="flex justify-end items-center gap-3 text-sm font-normal text-gray-800">
             <p className="flex items-center gap-1">
               <Mail className="h-4 w-4 text-yellow-600" />

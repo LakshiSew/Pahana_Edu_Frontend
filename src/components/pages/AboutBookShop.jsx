@@ -14,11 +14,12 @@ const AboutBookShop = () => {
     <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-purple-100 p-6">
       {/* Header */}
       <div className="max-w-6xl mx-auto text-center mb-10">
-        <img
-          src="https://randomuser.me/api/portraits/men/32.jpg"
-          alt="Founder"
-          className="w-32 h-32 rounded-full mx-auto mb-4 shadow"
-        />
+    <img
+  src="/src/assets/images/Pahana_EDU.svg"
+  alt="Founder"
+  className="w-32 h-32 rounded-full mx-auto mb-4 shadow-lg border-4 border-gradient-to-r from-yellow-400 to-yellow-600 hover:scale-110 hover:shadow-2xl transition-all duration-300 ease-in-out"
+/>
+
         <h1 className="text-4xl font-bold text-gray-800 mb-2">
           Welcome to <span className="text-blue-600">Pahana EDU</span> Book Shop
         </h1>
@@ -55,9 +56,9 @@ const AboutBookShop = () => {
         <div>
           <h3 className="text-2xl font-bold text-gray-800 mb-4">Contact Information</h3>
           <ul className="space-y-3 text-gray-700">
-            <li className="flex items-center"><MapPin className="w-5 h-5 text-red-500 mr-2" /> 123 Library Lane, Anytown</li>
-            <li className="flex items-center"><Mail className="w-5 h-5 text-green-500 mr-2" /> info@pahanaedu.com</li>
-            <li className="flex items-center"><Phone className="w-5 h-5 text-purple-500 mr-2" /> +94 77 123 4567</li>
+            <li className="flex items-center"><MapPin className="w-5 h-5 text-red-500 mr-2" /> 120 Galle Road, Colombo, Sri Lanka</li>
+            <li className="flex items-center"><Mail className="w-5 h-5 text-green-500 mr-2" /> pahanedu@gmail.com</li>
+            <li className="flex items-center"><Phone className="w-5 h-5 text-purple-500 mr-2" /> +94 77 327 4601</li>
           </ul>
         </div>
 

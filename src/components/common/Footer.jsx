@@ -85,7 +85,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-yellow-400" />
-                <span>456 Kandy Road, Colombo, Sri Lanka</span>
+                <span>120 Galle Road, Colombo, Sri Lanka</span>
               </li>
             </ul>
           </div>
