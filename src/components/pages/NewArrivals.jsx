@@ -1,40 +1,194 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, ShoppingCart } from "lucide-react";
-
-const categories = [
-  { categoryID: 0, categoryName: "All Categories", categoryImg: "", description: "All products", status: "Active" },
-  { categoryID: 1, categoryName: "Fiction", categoryImg: "/assets/images/fiction.jpg", description: "Novels and stories", status: "Active" },
-  { categoryID: 2, categoryName: "Non-Fiction", categoryImg: "/assets/images/nonfiction.jpg", description: "Biographies and educational", status: "Active" },
-  { categoryID: 3, categoryName: "Stationery", categoryImg: "/assets/images/stationery.jpg", description: "Pens and pencils", status: "Active" },
-  { categoryID: 4, categoryName: "Notebooks", categoryImg: "/assets/images/notebooks.jpg", description: "Journals and notepads", status: "Active" },
-];
-
-const products = [
-  { id: 1, categoryId: 1, bookTitle: "The Great Gatsby", author: "F. Scott Fitzgerald", images: "https://images.unsplash.com/photo-1544716278-ca5e3f4ebf0c?w=400&q=80", price: 1500, description: "A classic novel about the American Dream.", publisher: "Scribner", language: "English", publicationYear: 1925, stockQty: 50, pages: 180, discount: 10, previewPdf: "/assets/pdfs/gatsby.pdf", status: "Available", type: "Book" },
-  { id: 2, categoryId: 1, bookTitle: "Pride and Prejudice", author: "Jane Austen", images: "https://images.unsplash.com/photo-1544716278-ca5e3f4ebf0c?w=400&q=80", price: 1200, description: "A romantic novel of manners.", publisher: "Penguin", language: "English", publicationYear: 1813, stockQty: 40, pages: 432, discount: 5, previewPdf: "/assets/pdfs/pride.pdf", status: "Available", type: "Book" },
-  { id: 3, categoryId: 1, bookTitle: "1984", author: "George Orwell", images: "https://images.unsplash.com/photo-1544716278-ca5e3f4ebf0c?w=400&q=80", price: 1800, description: "A dystopian novel.", publisher: "Secker & Warburg", language: "English", publicationYear: 1949, stockQty: 30, pages: 328, discount: 15, previewPdf: "/assets/pdfs/1984.pdf", status: "Available", type: "Book" },
-  { id: 4, categoryId: 1, bookTitle: "To Kill a Mockingbird", author: "Harper Lee", images: "https://images.unsplash.com/photo-1544716278-ca5e3f4ebf0c?w=400&q=80", price: 1600, description: "A story of justice and morality.", publisher: "J.B. Lippincott", language: "English", publicationYear: 1960, stockQty: 45, pages: 281, discount: 0, previewPdf: "/assets/pdfs/mockingbird.pdf", status: "Available", type: "Book" },
-  { id: 5, categoryId: 1, bookTitle: "The Catcher in the Rye", author: "J.D. Salinger", images: "https://images.unsplash.com/photo-1544716278-ca5e3f4ebf0c?w=400&q=80", price: 1400, description: "A tale of teenage angst.", publisher: "Little, Brown", language: "English", publicationYear: 1951, stockQty: 35, pages: 277, discount: 10, previewPdf: "/assets/pdfs/catcher.pdf", status: "Available", type: "Book" },
-  { id: 6, categoryId: 2, bookTitle: "Sapiens", author: "Yuval Noah Harari", images: "https://images.unsplash.com/photo-1544716278-ca5e3f4ebf0c?w=400&q=80", price: 2200, description: "A history of humankind.", publisher: "Harper", language: "English", publicationYear: 2011, stockQty: 25, pages: 443, discount: 20, previewPdf: "/assets/pdfs/sapiens.pdf", status: "Available", type: "Book" },
-  { id: 7, categoryId: 2, bookTitle: "Educated", author: "Tara Westover", images: "https://images.unsplash.com/photo-1544716278-ca5e3f4ebf0c?w=400&q=80", price: 2000, description: "A memoir of self-education.", publisher: "Random House", language: "English", publicationYear: 2018, stockQty: 30, pages: 352, discount: 5, previewPdf: "/assets/pdfs/educated.pdf", status: "Available", type: "Book" },
-  { id: 8, categoryId: 2, bookTitle: "Becoming", author: "Michelle Obama", images: "https://images.unsplash.com/photo-1544716278-ca5e3f4ebf0c?w=400&q=80", price: 2500, description: "A personal memoir.", publisher: "Crown", language: "English", publicationYear: 2018, stockQty: 20, pages: 426, discount: 10, previewPdf: "/assets/pdfs/becoming.pdf", status: "Available", type: "Book" },
-  { id: 9, categoryId: 2, bookTitle: "The Immortal Life", author: "Rebecca Skloot", images: "https://images.unsplash.com/photo-1544716278-ca5e3f4ebf0c?w=400&q=80", price: 1900, description: "A story of science and ethics.", publisher: "Crown", language: "English", publicationYear: 2010, stockQty: 28, pages: 369, discount: 15, previewPdf: "/assets/pdfs/immortal.pdf", status: "Available", type: "Book" },
-  { id: 10, categoryId: 2, bookTitle: "Thinking, Fast and Slow", author: "Daniel Kahneman", images: "https://images.unsplash.com/photo-1544716278-ca5e3f4ebf0c?w=400&q=80", price: 2100, description: "A study of decision-making.", publisher: "Farrar", language: "English", publicationYear: 2011, stockQty: 22, pages: 499, discount: 0, previewPdf: "/assets/pdfs/thinking.pdf", status: "Available", type: "Book" },
-  { id: 11, categoryId: 3, itemName: "Gel Pen Set", brand: "Pilot", price: 500, stockQty: 100, image: "https://images.unsplash.com/photo-1598371695188-8e8e2b8d2a0b?w=400&q=80", description: "Set of 5 colorful gel pens.", status: "Available", type: "Accessory" },
-  { id: 12, categoryId: 3, itemName: "Highlighter Pack", brand: "Stabilo", price: 600, stockQty: 80, image: "https://images.unsplash.com/photo-1598371695188-8e8e2b8d2a0b?w=400&q=80", description: "Set of 4 neon highlighters.", status: "Available", type: "Accessory" },
-  { id: 13, categoryId: 3, itemName: "Mechanical Pencil", brand: "Pentel", price: 300, stockQty: 120, image: "https://images.unsplash.com/photo-1598371695188-8e8e2b8d2a0b?w=400&q=80", description: "0.7mm lead pencil.", status: "Available", type: "Accessory" },
-  { id: 14, categoryId: 4, itemName: "A5 Notebook", brand: "Moleskine", price: 800, stockQty: 60, image: "https://images.unsplash.com/photo-1598371695188-8e8e2b8d2a0b?w=400&q=80", description: "Hardcover lined notebook.", status: "Available", type: "Accessory" },
-  { id: 15, categoryId: 4, itemName: "Journal Planner", brand: "Paperblanks", price: 1000, stockQty: 50, image: "https://images.unsplash.com/photo-1598371695188-8e8e2b8d2a0b?w=400&q=80", description: "Weekly planner with bookmark.", status: "Available", type: "Accessory" },
-];
+import { motion } from "framer-motion";
+import axios from "axios";
 
 const NewArrivals = () => {
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([
+    { categoryId: "0", categoryName: "All Categories", description: "All products", status: "Active" },
+  ]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [cartMessage, setCartMessage] = useState("");
   const navigate = useNavigate();
 
-  // Select first 6 available products as new arrivals (placeholder logic)
-  const newArrivals = products.filter((product) => product.status === "Available").slice(0, 6);
+  const API_BASE_URL = "http://localhost:8080"; // Replace with your backend URL
+
+  // Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/auth/getallcategories`);
+        const activeCategories = response.data.filter((cat) => cat.status === "Active");
+        setCategories([
+          { categoryId: "0", categoryName: "All Categories", description: "All products", status: "Active" },
+          ...activeCategories,
+        ]);
+      } catch (err) {
+        setError(err.message || "Failed to load categories.");
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Fetch newest products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const [booksResponse, accessoriesResponse] = await Promise.all([
+          axios.get(`${API_BASE_URL}/auth/getallbooks`),
+          axios.get(`${API_BASE_URL}/auth/getallaccessories`),
+        ]);
+
+        const books = booksResponse.data
+          .filter((book) => book.status === "Active")
+          .map((book) => ({
+            id: book.bookId,
+            categoryId: book.categoryId,
+            name: book.title,
+            author: book.author,
+            aboutAuthor: book.aboutAuthor || "N/A",
+            pages: book.pages || "N/A",
+            publisherName: book.publisherName || "N/A",
+            language: book.language || "N/A",
+            publicationYear: book.publicationYear || "N/A",
+            price: book.price,
+            discount: book.discount || 0,
+            description: book.description || "N/A",
+            image: book.image || "https://via.placeholder.com/400",
+            stockQty: book.stockQty || 0,
+            status: book.status === "Active" ? "Available" : "Out of Stock",
+            type: "Book",
+            pdf: book.pdf || null,
+            createdAt: book.createdAt || new Date().toISOString(),
+            updatedAt: book.updatedAt || new Date().toISOString(),
+          }));
+
+        const accessories = accessoriesResponse.data
+          .filter((acc) => acc.status === "Active")
+          .map((acc) => ({
+            id: acc.id,
+            categoryId: acc.categoryId,
+            name: acc.itemName,
+            brand: acc.brand || "N/A",
+            price: acc.price,
+            discount: acc.discount || 0,
+            description: acc.description || "N/A",
+            image: acc.image || "https://via.placeholder.com/400",
+            stockQty: acc.stockQty || 0,
+            status: acc.status === "Active" ? "Available" : "Out of Stock",
+            type: "Accessory",
+            createdAt: acc.createdAt || new Date().toISOString(),
+            updatedAt: acc.updatedAt || new Date().toISOString(),
+          }));
+
+        const newArrivals = [...books, ...accessories]
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 6)
+          .filter((product) => product.status === "Available");
+
+        setProducts(newArrivals);
+      } catch (err) {
+        setError(err.message || "Failed to load new arrivals.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const handleSeeMore = (product) => {
-    navigate(`/product/${product.id}`, { state: { product } });
+    navigate(`/productDetails/${product.id}`, { state: { product } });
+  };
+
+  const getDiscountedPrice = (price, discount) => {
+    return discount > 0 ? price * (1 - discount / 100) : price;
+  };
+
+  const handleAddToCart = async (product) => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    if (!token || !userId) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/add`,
+        {
+          userId,
+          productId: product.id,
+          productType: product.type,
+          quantity: 1,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("Add to cart response:", response.data);
+      setCartMessage(`${product.name} has been added to your cart!`);
+      setTimeout(() => setCartMessage(""), 3000);
+      triggerStarAnimation(product.id);
+      setTimeout(() => {
+        const cartUpdateEvent = new Event("cartUpdated");
+        window.dispatchEvent(cartUpdateEvent);
+        console.log("Dispatched cartUpdated event");
+      }, 1000);
+    } catch (err) {
+      console.error("Failed to add to cart:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "Failed to add product to cart.");
+      setTimeout(() => setError(null), 3000);
+    }
+  };
+
+  const triggerStarAnimation = (productId) => {
+    const addButton = document.querySelector(`#add-to-cart-${productId}`);
+    const cartIcon = document.querySelector(".cart-icon");
+
+    if (!addButton || !cartIcon) {
+      console.error("Add button or cart icon not found");
+      return;
+    }
+
+    const star = document.createElement("div");
+    star.className = "star-animation";
+    document.body.appendChild(star);
+
+    const buttonRect = addButton.getBoundingClientRect();
+    const cartRect = cartIcon.getBoundingClientRect();
+
+    star.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
+    star.style.top = `${buttonRect.top + buttonRect.height / 2}px`;
+
+    const deltaX = cartRect.left + cartRect.width / 2 - (buttonRect.left + buttonRect.width / 2);
+    const deltaY = cartRect.top + cartRect.height / 2 - (buttonRect.top + buttonRect.height / 2);
+
+    star.animate(
+      [
+        { transform: "translate(0, 0) scale(1)", opacity: 1 },
+        { transform: `translate(${deltaX / 2}px, ${deltaY - 100}px) scale(0.7)`, opacity: 0.7, offset: 0.5 },
+        { transform: `translate(${deltaX}px, ${deltaY}px) scale(0.5)`, opacity: 0.5 },
+      ],
+      {
+        duration: 1000,
+        easing: "ease-in-out",
+        fill: "forwards",
+      }
+    );
+
+    setTimeout(() => {
+      star.remove();
+    }, 1000);
+
+    cartIcon.classList.add("shake");
+    setTimeout(() => {
+      cartIcon.classList.remove("shake");
+    }, 200);
   };
 
   return (
@@ -45,6 +199,16 @@ const NewArrivals = () => {
 
       <div className="relative z-10 bg-transparent text-black py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
+          {cartMessage && (
+            <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg">
+              {cartMessage}
+            </div>
+          )}
+          {error && (
+            <div className="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-md shadow-lg">
+              {error}
+            </div>
+          )}
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold font-sans bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600">
               New Arrivals
@@ -54,79 +218,115 @@ const NewArrivals = () => {
             </p>
           </div>
 
-          {newArrivals.length === 0 ? (
+          {loading ? (
+            <div className="text-center text-gray-600 font-sans text-lg">Loading...</div>
+          ) : error ? (
+            <div className="text-center text-red-600 font-sans text-lg">{error}</div>
+          ) : products.length === 0 ? (
             <div className="text-center text-gray-600 font-sans text-lg">
               No new arrivals available at the moment.
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {newArrivals.map((product) => (
-                <div
+              {products.map((product) => (
+                <motion.div
                   key={product.id}
-                  className="relative bg-white rounded-xl overflow-hidden shadow-lg transform transition-all hover:-translate-y-2 hover:shadow-2xl duration-300"
+                  className="relative bg-white rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-yellow-600/50 flex flex-col h-[480px]"
+                  whileHover={{ scale: 1.05, y: -8 }}
                 >
                   <div className="relative">
                     <img
-                      src={product.type === "Book" ? product.images : product.image}
-                      alt={product.type === "Book" ? product.bookTitle : product.itemName}
+                      src={product.image}
+                      alt={product.name}
                       className="w-full h-48 object-cover"
                     />
-                    <div className="absolute top-4 right-4 bg-yellow-400 text-black text-sm font-semibold px-3 py-1 rounded-full shadow-md">
-                      Rs. {Number(product.price || 0).toFixed(2)}
-                      {product.discount > 0 && (
-                        <span className="ml-1 text-xs">({product.discount}% off)</span>
+                    <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600 to-amber-900 text-white text-sm font-semibold px-3 py-1 rounded-full shadow-md">
+                      {product.discount > 0 ? (
+                        <>
+                          <span className="line-through mr-2">Rs. {Number(product.price).toFixed(2)}</span>
+                          <span>Rs. {getDiscountedPrice(product.price, product.discount).toFixed(2)}</span>
+                          <span className="ml-2 text-xs">({product.discount}% off)</span>
+                        </>
+                      ) : (
+                        <span>Rs. {Number(product.price).toFixed(2)}</span>
                       )}
                     </div>
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-black truncate font-sans">
-                      {product.type === "Book" ? product.bookTitle : product.itemName}
-                    </h3>
-                    <p className="text-sm text-gray-600 font-sans mt-1">
-                      {product.type === "Book" ? `by ${product.author}` : `Brand: ${product.brand}`}
-                    </p>
-                    <div className="mt-4 space-y-2 text-sm">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 font-sans">Category:</span>
-                        <span className="font-medium text-black font-sans">
-                          {categories.find((cat) => cat.categoryID === product.categoryId)?.categoryName}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 font-sans">Stock:</span>
-                        <span className="font-medium text-green-600 font-sans">
-                          {product.stockQty > 0 ? `${product.stockQty} Available` : "Out of Stock"}
-                        </span>
-                      </div>
-                      {product.type === "Book" && (
+                  <div className="flex flex-col flex-grow p-6">
+                    <div className="flex-grow space-y-2">
+                      <h3 className="text-xl font-bold text-black truncate font-sans">{product.name}</h3>
+                      <p className="text-sm text-gray-600 font-sans">
+                        {product.type === "Book" ? `by ${product.author}` : `Brand: ${product.brand}`}
+                      </p>
+                      <div className="space-y-2 text-sm">
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-600 font-sans">Pages:</span>
-                          <span className="font-medium text-black font-sans">{product.pages}</span>
+                          <span className="text-gray-600 font-sans">Category:</span>
+                          <span className="font-medium text-black font-sans">
+                            {categories.find((cat) => cat.categoryId === product.categoryId)?.categoryName || "Unknown"}
+                          </span>
                         </div>
-                      )}
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600 font-sans">Stock:</span>
+                          <span className="font-medium text-green-600 font-sans">
+                            {product.stockQty > 0 ? `${product.stockQty} Available` : "Out of Stock"}
+                          </span>
+                        </div>
+                        {product.type === "Book" && (
+                          <>
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600 font-sans">Pages:</span>
+                              <span className="font-medium text-black font-sans">{product.pages || "N/A"}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600 font-sans">Publisher:</span>
+                              <span className="font-medium text-black font-sans">{product.publisherName || "N/A"}</span>
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex gap-4 mt-6">
+                    <div className="flex flex-row gap-4 mt-4">
                       <button
                         onClick={() => handleSeeMore(product)}
-                        className="flex-1 bg-yellow-400 text-black font-sans py-3 px-4 rounded-full font-semibold text-md hover:bg-yellow-500 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+                        className="flex-1 bg-gradient-to-r from-yellow-600 to-amber-900 text-white font-sans py-2 px-4 rounded-full font-semibold text-md hover:bg-gradient-to-r hover:from-yellow-700 hover:to-amber-950 transition-all duration-300 flex items-center justify-center gap-2"
                       >
                         <Eye className="w-5 h-5" /> See More
                       </button>
                       <button
-                        onClick={() => handleSeeMore(product)} // Placeholder for cart functionality
-                        className="flex-1 bg-blue-600 text-white font-sans py-3 px-4 rounded-full font-semibold text-md hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+                        id={`add-to-cart-${product.id}`}
+                        onClick={() => handleAddToCart(product)}
+                        className="flex-1 bg-gradient-to-r from-blue-600 to-blue-800 text-white font-sans py-2 px-4 rounded-full font-semibold text-md hover:bg-gradient-to-r hover:from-blue-700 hover:to-blue-900 transition-all duration-300 flex items-center justify-center gap-2"
+                        disabled={product.stockQty === 0}
                       >
                         <ShoppingCart className="w-5 h-5" /> Add to Cart
                       </button>
                     </div>
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
-                </div>
+                </motion.div>
               ))}
             </div>
           )}
         </div>
       </div>
+
+      <style jsx>{`
+        .star-animation {
+          position: fixed;
+          width: 20px;
+          height: 20px;
+          background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="yellow"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>') no-repeat center;
+          background-size: contain;
+          z-index: 1000;
+        }
+        .shake {
+          animation: shake 0.2s ease-in-out;
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          50% { transform: translateX(-5px); }
+        }
+      `}</style>
     </div>
   );
 };

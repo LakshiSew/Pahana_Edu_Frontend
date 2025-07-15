@@ -296,7 +296,7 @@ const ManageOrders = () => {
         <div className="bg-black/70 backdrop-blur-xl rounded-xl border border-yellow-400/50 shadow-lg">
           <div className="p-4 border-b border-yellow-400/30 flex justify-between items-center">
             <h2 className="text-xl font-semibold text-white font-sans">
-              Orders
+              All Orders
             </h2>
             <select
               value={statusFilter}
@@ -316,7 +316,7 @@ const ManageOrders = () => {
               </div>
             ) : (
               <table className="min-w-full divide-y divide-yellow-400/30">
-                <thead className="bg-gradient-to-br from-indigo-500 to-violet-600">
+                <thead className="bg-black/50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
                       Order ID

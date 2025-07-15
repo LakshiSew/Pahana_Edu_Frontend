@@ -4,6 +4,7 @@ import { Eye, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
 import axios from "axios";
 
+
 const ProductList = () => {
   const [categories, setCategories] = useState([{ categoryId: "0", categoryName: "All Categories", description: "All products", status: "Active" }]);
   const [products, setProducts] = useState([]);
@@ -340,5 +341,6 @@ const ProductList = () => {
 };
 
 export default ProductList;
+
 
 

@@ -26,14 +26,15 @@ import ContactUs from "./components/pages/ContactUs";
 import CustomerDashboard from "./components/pages/CustomerDashboard";
 import AdminRoutes from "./components/admin/AdminRoutes";
 import StaffRoutes from "./components/staff/StaffRoutes";
-
-
+import FeedbackForm from "./components/pages/FeedbackForm";
+import PrivacyPolicy from "./components/pages/PrivacyPolicy";
+import TermsOfService from "./components/pages/TermsOfService";
 
 function App() {
   const location = useLocation();
   const [isSticky, setSticky] = useState(false);
 
-   const isAdminRoute = location.pathname.startsWith("/admin");
+  const isAdminRoute = location.pathname.startsWith("/admin");
   const isStaffRoute = location.pathname.startsWith("/staff");
 
   const hideHeaderFooter = isAdminRoute || isStaffRoute;
@@ -53,7 +54,7 @@ function App() {
 
   return (
     <>
-   {!hideHeaderFooter && isSticky && <StickyHeader />}
+      {!hideHeaderFooter && isSticky && <StickyHeader />}
       {!hideHeaderFooter && <Header />}
       <div className="app-container min-h-screen">
         <Routes>
@@ -63,14 +64,12 @@ function App() {
               <>
                 <Hero />
                 <Delivery />
-                <AboutShop/>
-                <Services/>
-               <TopCategory/>
-               <Product/>
-               <BookApp/>
-               <Feedback/>
-             
-          
+                <AboutShop />
+                <Services />
+                <TopCategory />
+                <Product />
+                <BookApp />
+                <Feedback />
               </>
             }
           />
@@ -85,20 +84,22 @@ function App() {
           <Route path="/suggestBook" element={<SuggestABook />} />
           <Route path="/about" element={<AboutBookShop />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="/feedbackform" element={<FeedbackForm />} />
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="/customerDashboard" element={<CustomerDashboard />} />
-            <Route path="/admin/*" element={<AdminRoutes />} />
-            <Route path="/staff/*" element={<StaffRoutes />} />
+          <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+          <Route path="/termsofservice" element={<TermsOfService />} />
 
+          <Route path="/admin/*" element={<AdminRoutes />} />
+          <Route path="/staff/*" element={<StaffRoutes />} />
 
-           
           {/* <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/admin/*" element={<div>Admin Dashboard Placeholder</div>} /> */}
         </Routes>
       </div>
-     
-       {!hideHeaderFooter && <Footer />}
+
+      {!hideHeaderFooter && <Footer />}
     </>
   );
 }

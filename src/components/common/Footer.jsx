@@ -15,7 +15,11 @@ const Footer = () => {
     <footer className="relative bg-gradient-to-b from-blue-50 to-white pt-10 pb-16 overflow-hidden">
       {/* Decorative Wave Background */}
       <div className="absolute inset-0 opacity-20">
-        <svg className="w-full h-full" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <svg
+          className="w-full h-full"
+          viewBox="0 0 1440 320"
+          preserveAspectRatio="none"
+        >
           <path
             fill="#FBBF24"
             fillOpacity="0.3"
@@ -35,7 +39,8 @@ const Footer = () => {
               className="h-24 w-24 mb-4 transform hover:scale-105 transition-transform duration-300"
             />
             <p className="text-sm text-gray-600 max-w-xs text-center md:text-left font-sans">
-              Discover a world of knowledge with Pahana Edu's curated books and stationery, delivered with care.
+              Discover a world of knowledge with Pahana Edu's curated books and
+              stationery, delivered with care.
             </p>
           </div>
 
@@ -45,7 +50,13 @@ const Footer = () => {
               Quick Links
             </h3>
             <ul className="space-y-2 text-gray-600 font-sans">
-              {["Shop Books", "Stationery", "Privacy Policy", "Terms of Service", "Contact"].map((link) => (
+              {[
+                "Shop Books",
+                "Stationery",
+                "Privacy Policy",
+                "Terms of Service",
+                "Contact",
+              ].map((link) => (
                 <li key={link}>
                   <Link
                     to={`/${link.toLowerCase().replace(/\s/g, "")}`}
@@ -66,11 +77,11 @@ const Footer = () => {
             <ul className="space-y-3 text-gray-600 font-sans">
               <li className="flex items-center gap-2">
                 <Phone className="w-5 h-5 text-yellow-400" />
-                <span>+94 11 234 5678</span>
+                <span>+94 77 327 4601</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-5 h-5 text-yellow-400" />
-                <span>info@pahanaedu.lk</span>
+                <span>pahanaedu</span>
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-yellow-400" />
@@ -107,7 +118,10 @@ const Footer = () => {
         <div className="mt-10 bg-yellow-100 py-6 px-8 rounded-lg flex flex-col md:flex-row items-center justify-between">
           <div className="text-center md:text-left">
             <h3 className="text-xl font-bold text-black">Need a Book Now?</h3>
-            <p className="text-gray-600">Browse our collection or contact us for personalized recommendations!</p>
+            <p className="text-gray-600">
+              Browse our collection or contact us for personalized
+              recommendations!
+            </p>
           </div>
           <a
             href="/shop"
@@ -122,8 +136,13 @@ const Footer = () => {
       <div className="absolute bottom-0 left-0 w-full h-14 bg-gradient-to-r from-yellow-400 to-yellow-500 flex items-center justify-center px-4 z-20">
         <p className="text-sm text-black text-center font-sans">
           © 2025 Pahana Edu. All Rights Reserved. |{" "}
-          <a href="/privacypolicy" className="hover:underline">Privacy Policy</a> |{" "}
-          <a href="/termsofservice" className="hover:underline">Terms of Service</a>
+          <a href="/privacypolicy" className="hover:underline">
+            Privacy Policy
+          </a>{" "}
+          |{" "}
+          <a href="/termsofservice" className="hover:underline">
+            Terms of Service
+          </a>
         </p>
       </div>
     </footer>

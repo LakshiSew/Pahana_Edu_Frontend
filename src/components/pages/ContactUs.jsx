@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Mail,
   Phone,
@@ -9,10 +9,57 @@ import {
   FileText,
   MessageCircle,
 } from "lucide-react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ContactUs = () => {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    message: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      await axios.post("http://localhost:8080/auth/submit", {
+        fullName: formData.fullName,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        message: formData.message,
+      });
+
+      toast.success("Message sent successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      setFormData({ fullName: "", email: "", phoneNumber: "", message: "" });
+    } catch (err) {
+      toast.error(
+        "Failed to send message: " +
+          (err.response?.data?.message || err.message),
+        {
+          position: "top-right",
+          autoClose: 3000,
+        }
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-16 bg-white">
+      <ToastContainer />
       <h2 className="text-4xl font-extrabold text-center text-black mb-4 tracking-tight">
         📬 Contact Pahana Edu
       </h2>
@@ -60,7 +107,7 @@ const ContactUs = () => {
         </div>
 
         {/* Right Side - Contact Form */}
-        <form className="space-y-6 w-full ">
+        <form className="space-y-6 w-full" onSubmit={handleSubmit}>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="text-sm font-medium text-black mb-1 flex items-center gap-2">
@@ -69,8 +116,12 @@ const ContactUs = () => {
               </label>
               <input
                 type="text"
+                name="fullName"
                 placeholder="Your name"
                 className="w-full border-b-2 border-yellow-400 focus:outline-none focus:border-black px-2 py-2 bg-transparent text-black"
+                value={formData.fullName}
+                onChange={handleChange}
+                required
               />
             </div>
             <div>
@@ -80,8 +131,12 @@ const ContactUs = () => {
               </label>
               <input
                 type="email"
+                name="email"
                 placeholder="you@example.com"
                 className="w-full border-b-2 border-yellow-400 focus:outline-none focus:border-black px-2 py-2 bg-transparent text-black"
+                value={formData.email}
+                onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -89,12 +144,15 @@ const ContactUs = () => {
           <div>
             <label className="text-sm font-medium text-black mb-1 flex items-center gap-2">
               <FileText className="w-4 h-4 text-yellow-500" />
-              Subject
+              Phone Number
             </label>
             <input
               type="text"
-              placeholder="Let us know the topic"
+              name="phoneNumber"
+              placeholder="Enter your mobile number"
               className="w-full border-b-2 border-yellow-400 focus:outline-none focus:border-black px-2 py-2 bg-transparent text-black"
+              value={formData.phoneNumber}
+              onChange={handleChange}
             />
           </div>
 
@@ -104,19 +162,26 @@ const ContactUs = () => {
               Your Message
             </label>
             <textarea
+              name="message"
               rows="5"
               placeholder="Type your message here..."
               className="w-full border-b-2 border-yellow-400 focus:outline-none focus:border-black px-2 py-2 bg-transparent text-black resize-none"
+              value={formData.message}
+              onChange={handleChange}
+              required
             ></textarea>
           </div>
 
           <div className="pt-4">
             <button
               type="submit"
-              className="inline-flex items-center gap-2 bg-yellow-500 hover:bg-black hover:text-yellow-400 text-black px-6 py-3 rounded-full text-lg font-semibold transition-all duration-300"
+              disabled={submitting}
+              className={`inline-flex items-center gap-2 bg-yellow-400 hover:bg-black hover:text-yellow-400 text-black px-6 py-3 rounded-full text-lg font-semibold transition-all duration-300 ${
+                submitting ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               <Send className="w-5 h-5" />
-              Send Message
+              {submitting ? "Sending..." : "Send Message"}
             </button>
           </div>
         </form>

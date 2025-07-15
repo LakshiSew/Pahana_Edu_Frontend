@@ -74,10 +74,10 @@ html, body, #root {
   100% { transform: translateX(0); }
 }
 
-
+/* 
 header {
   background: linear-gradient(to right, #2563eb, #1e40af);
-}
+} */
 
 .cart-icon {
   position: relative;

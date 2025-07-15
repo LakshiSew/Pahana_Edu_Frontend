@@ -75,7 +75,7 @@ export const AboutShop = () => {
             {/* Contact Info */}
             <div className="bg-yellow-100 px-6 py-4 rounded-lg shadow-lg hover:bg-yellow-200 cursor-pointer transition-colors">
               <p className="text-gray-800 font-semibold text-lg mb-1">Contact Us</p>
-              <p className="text-2xl font-extrabold text-yellow-400">+94 77 673 2675</p>
+              <p className="text-1xl font-extrabold text-yellow-400">+94 77 3274601</p>
             </div>
           </div>
         </div>

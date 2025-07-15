@@ -171,7 +171,7 @@ const Hero = () => {
                   </motion.p>
                   <motion.div variants={textChildVariants}>
                     <Link
-                      to="/products"
+                      to="/productList"
                       className="flex items-center justify-center gap-2 max-w-[180px] w-full h-12 bg-yellow-400 text-black rounded-full font-semibold text-lg shadow-lg hover:shadow-xl"
                       whileHover="hover"
                       variants={buttonVariants}

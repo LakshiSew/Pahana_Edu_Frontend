@@ -457,7 +457,7 @@ const ManageBooks = () => {
               </div>
             ) : (
               <table className="min-w-full divide-y divide-yellow-400/30">
-                <thead className="bg-gradient-to-br from-indigo-500 to-violet-600">
+                <thead className="bg-black/50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
                       Title
@@ -477,18 +477,18 @@ const ManageBooks = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
                       Category
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
                       Language
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+                    </th> */}
+                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
                       Publisher
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+                    </th> */}
+                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
                       Publication Year
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+                    </th> */}
+                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
                       Pages
-                    </th>
+                    </th> */}
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
                       PDF
                     </th>
@@ -540,18 +540,18 @@ const ManageBooks = () => {
                           (cat) => cat.categoryId === book.categoryId
                         )?.categoryName || "Unknown Category"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
                         {book.language || "N/A"}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+                      </td> */}
+                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
                         {book.publisherName || "N/A"}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+                      </td> */}
+                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
                         {book.publicationYear || "N/A"}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+                      </td> */}
+                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
                         {book.pages || "N/A"}
-                      </td>
+                      </td> */}
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         {book.pdf ? (
                           <button

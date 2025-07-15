@@ -263,7 +263,7 @@ const ManageAdmins = () => {
               <div className="p-8 text-center text-white font-sans">No admins found.</div>
             ) : (
               <table className="min-w-full divide-y divide-yellow-400/30">
-                <thead className="bg-gradient-to-br from-indigo-500 to-violet-600">
+                <thead className="bg-black/50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
                       ID

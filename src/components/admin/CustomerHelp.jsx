@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
-import {
-  SearchIcon,
-  EyeIcon,
-} from "lucide-react";
+import { SearchIcon, EyeIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const CustomerHelp = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,38 +14,73 @@ const CustomerHelp = () => {
   const [showReplyModal, setShowReplyModal] = useState(false);
 
   useEffect(() => {
-    // Simulate fetching data with dummy data
-    const dummyHelpRequests = [
-      { id: 1, customerName: "Alice Brown", email: "alice.brown@example.com", subject: "Order Delay", message: "My order has been delayed, please help!", status: "Pending" },
-      { id: 2, customerName: "Charlie Green", email: "charlie.green@example.com", subject: "Account Issue", message: "Unable to login to my account.", status: "Pending" },
-      { id: 3, customerName: "David White", email: "david.white@example.com", subject: "Refund Request", message: "Please process my refund for order #123.", status: "Sent" },
-    ];
-    setHelpRequests(dummyHelpRequests);
-    setLoading(false);
+    const fetchHelpRequests = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/auth/getall");
+        const mappedRequests = response.data.map((req) => ({
+          id: req.id,
+          customerName: req.fullName,
+          email: req.email,
+          message: req.message,
+          status: req.reply ? "Sent" : "Pending",
+        }));
+        setHelpRequests(mappedRequests);
+      } catch (err) {
+        toast.error("Failed to fetch help requests: " + (err.response?.data?.message || err.message), {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHelpRequests();
   }, []);
 
-  // Handle sending reply and updating status
-  const handleSendReply = () => {
-    if (replyMessage.trim()) {
-      setHelpRequests(helpRequests.map((req) =>
-        req.id === selectedRequest.id ? { ...req, status: "Sent" } : req
-      ));
+  const handleSendReply = async () => {
+    if (!replyMessage.trim()) {
+      toast.error("Reply message cannot be empty", { position: "top-right", autoClose: 3000 });
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Please log in to send a reply");
+      }
+
+      await axios.post(
+        `http://localhost:8080/help/${selectedRequest.id}`,
+        { reply: replyMessage },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+
+      setHelpRequests(
+        helpRequests.map((req) =>
+          req.id === selectedRequest.id ? { ...req, status: "Sent" } : req
+        )
+      );
       setShowReplyModal(false);
       setSelectedRequest(null);
       setReplyMessage("");
-      toast.success("Reply sent successfully! (Email will be handled by backend later)", {
+      toast.success("Reply sent successfully!", { position: "top-right", autoClose: 3000 });
+    } catch (err) {
+      toast.error("Failed to send reply: " + (err.response?.data?.message || err.message), {
         position: "top-right",
         autoClose: 3000,
       });
     }
   };
 
-  // Filter help requests
   const filteredRequests = helpRequests.filter((request) =>
     (request.customerName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
     (request.id?.toString().toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
     (request.email?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
-    (request.subject?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
     (request.message?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   );
 
@@ -146,9 +179,6 @@ const CustomerHelp = () => {
                       Email
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
-                      Subject
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
                       Customer Message
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
@@ -176,9 +206,6 @@ const CustomerHelp = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
                         {request.email}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {request.subject}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
                         {request.message}
@@ -216,7 +243,6 @@ const CustomerHelp = () => {
         </motion.div>
       </main>
 
-      {/* Reply to Customer Modal */}
       {showReplyModal && selectedRequest && (
         <motion.div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
@@ -248,14 +274,6 @@ const CustomerHelp = () => {
                 </label>
                 <p className="text-sm text-white font-sans">
                   {selectedRequest.email}
-                </p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-yellow-400 font-sans">
-                  Subject
-                </label>
-                <p className="text-sm text-white font-sans">
-                  {selectedRequest.subject}
                 </p>
               </div>
               <div>
