@@ -1294,7 +1294,7 @@ const CustomerDashboard = () => {
       );
       setShowCancelModal(false);
       setSelectedOrderId(null);
-      toast.success("Order canceled successfully! Your Money will be refund soon.", { position: "top-right", autoClose: 3000 });
+      toast.success("Order canceled successfully!", { position: "top-right", autoClose: 3000 });
     } catch (err) {
       console.error("Cancel order error:", err);
       toast.error(err.response?.data || "Failed to cancel order", { position: "top-right", autoClose: 3000 });
@@ -1351,7 +1351,14 @@ const CustomerDashboard = () => {
             accept="image/*"
           />
         </div>
-        <nav className="w-full flex-1 space-y-4 mt-8">
+        <div className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${
+          customer.status === "PENDING"
+            ? "bg-yellow-100 text-yellow-800"
+            : "bg-green-100 text-green-800"
+        }`}>
+          {customer.status === "PENDING" ? "Pending Account" : "Verified Account"}
+        </div>
+        <nav className="w-full flex-1 space-y-4 mt-6">
           {[
             { id: "details", label: "Your Details", icon: <User className="w-5 h-5" /> },
             { id: "update", label: "Update Account", icon: <Edit className="w-5 h-5" /> },
