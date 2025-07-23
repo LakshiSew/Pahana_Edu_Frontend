@@ -687,9 +687,9 @@ const ManageAccessories = () => {
                   }
                   required
                 >
-                  <option value="">Select a category</option>
+                  <option value="" className="text-black">Select a category</option>
                   {categories.map((category) => (
-                    <option
+                    <option className="text-black"
                       key={category.categoryId}
                       value={category.categoryId}
                     >
@@ -883,9 +883,9 @@ const ManageAccessories = () => {
                     })
                   }
                 >
-                  <option value="">Select a category</option>
+                  <option value="" className="text-black">Select a category</option>
                   {categories.map((category) => (
-                    <option
+                    <option className="text-black"
                       key={category.categoryId}
                       value={category.categoryId}
                     >
@@ -1008,8 +1008,8 @@ const ManageAccessories = () => {
                     })
                   }
                 >
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
+                  <option value="Active" className="text-black">Active</option>
+                  <option value="Inactive" className="text-black">Inactive</option>
                 </select>
               </div>
               <div className="flex justify-end gap-2">

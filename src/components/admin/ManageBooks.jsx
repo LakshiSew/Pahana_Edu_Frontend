@@ -213,17 +213,25 @@ const ManageBooks = () => {
 
       const formData = new FormData();
       if (selectedBook.title) formData.append("title", selectedBook.title);
-      if (selectedBook.categoryId) formData.append("categoryId", selectedBook.categoryId);
+      if (selectedBook.categoryId)
+        formData.append("categoryId", selectedBook.categoryId);
       if (selectedBook.author) formData.append("author", selectedBook.author);
-      if (selectedBook.aboutAuthor) formData.append("aboutAuthor", selectedBook.aboutAuthor);
+      if (selectedBook.aboutAuthor)
+        formData.append("aboutAuthor", selectedBook.aboutAuthor);
       if (selectedBook.price) formData.append("price", selectedBook.price);
-      if (selectedBook.stockQty) formData.append("stockQty", selectedBook.stockQty);
-      if (selectedBook.description) formData.append("description", selectedBook.description);
-      if (selectedBook.discount) formData.append("discount", selectedBook.discount);
+      if (selectedBook.stockQty)
+        formData.append("stockQty", selectedBook.stockQty);
+      if (selectedBook.description)
+        formData.append("description", selectedBook.description);
+      if (selectedBook.discount)
+        formData.append("discount", selectedBook.discount);
       if (selectedBook.status) formData.append("status", selectedBook.status);
-      if (selectedBook.language) formData.append("language", selectedBook.language);
-      if (selectedBook.publisherName) formData.append("publisherName", selectedBook.publisherName);
-      if (selectedBook.publicationYear) formData.append("publicationYear", selectedBook.publicationYear);
+      if (selectedBook.language)
+        formData.append("language", selectedBook.language);
+      if (selectedBook.publisherName)
+        formData.append("publisherName", selectedBook.publisherName);
+      if (selectedBook.publicationYear)
+        formData.append("publicationYear", selectedBook.publicationYear);
       if (selectedBook.pages) formData.append("pages", selectedBook.pages);
       if (selectedBook.image && typeof selectedBook.image !== "string") {
         formData.append("image", selectedBook.image);
@@ -384,7 +392,7 @@ const ManageBooks = () => {
 
       <header className="bg-black/70 backdrop-blur-xl border-b border-yellow-400/30 p-4 flex justify-between items-center z-[2]">
         <div>
-          <h1 className="text-2xl font-bold text-white font-sans bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600">
+          <h1 className="text-2xl font-bold text-white font-sans bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
             Manage Book Products
           </h1>
           <p className="text-yellow-400/70 font-sans">
@@ -450,160 +458,121 @@ const ManageBooks = () => {
               <option value="Out of Stock">Out of Stock</option>
             </select>
           </div>
-          <div className="overflow-x-auto">
-            {filteredBooks.length === 0 ? (
-              <div className="p-8 text-center text-white font-sans">
-                No books found.
+    <div className="overflow-x-auto">
+  {filteredBooks.length === 0 ? (
+    <div className="p-8 text-center text-white font-sans">
+      No books found.
+    </div>
+  ) : (
+    <table className="min-w-full divide-y divide-yellow-400/30">
+      <thead className="bg-black/50">
+        <tr>
+          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+            S.No
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+            Title
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+            Author
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+            Price
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+            Image
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+            Stock
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+            Category
+          </th>
+          <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider font-sans">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-yellow-400/30">
+        {filteredBooks.map((book, index) => (
+          <tr key={book.bookId} className="hover:bg-yellow-400/10">
+            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white font-sans">
+              {index + 1}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white font-sans">
+              {book.title}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+              {book.author}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+              Rs.{book.price}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap">
+              {book.image ? (
+                <img
+                  src={book.image}
+                  alt={book.title}
+                  className="h-10 w-10 rounded-full object-cover"
+                />
+              ) : (
+                <span className="text-sm text-yellow-400/70 font-sans">
+                  No Image
+                </span>
+              )}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm">
+              <span
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  book.status === "Active"
+                    ? "bg-green-400/20 text-green-400"
+                    : "bg-red-400/20 text-red-400"
+                }`}
+              >
+                {book.status === "Active" ? "In Stock" : "Out of Stock"}
+              </span>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+              {categories.find((cat) => cat.categoryId === book.categoryId)
+                ?.categoryName || "Unknown Category"}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-right">
+              <div className="flex gap-2 justify-end">
+                <button
+                  onClick={() => {
+                    setSelectedBook(book);
+                    setShowViewModal(true);
+                  }}
+                  className="bg-gradient-to-br from-green-400 to-emerald-600 text-white px-2 py-1 rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  <EyeIcon className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedBook(book);
+                    setShowUpdateModal(true);
+                  }}
+                  className="bg-gradient-to-br from-cyan-500 to-sky-600 text-white px-2 py-1 rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  <EditIcon className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedBook(book);
+                    setShowDeleteModal(true);
+                  }}
+                  className="bg-gradient-to-br from-amber-500 to-orange-600 text-white px-2 py-1 rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  <Trash2Icon className="h-5 w-5" />
+                </button>
               </div>
-            ) : (
-              <table className="min-w-full divide-y divide-yellow-400/30">
-                <thead className="bg-black/50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      Title
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      Author
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      Price
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      Image
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      Stock
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      Category
-                    </th>
-                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      Language
-                    </th> */}
-                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      Publisher
-                    </th> */}
-                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      Publication Year
-                    </th> */}
-                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      Pages
-                    </th> */}
-                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      PDF
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-yellow-400/30">
-                  {filteredBooks.map((book) => (
-                    <tr key={book.bookId} className="hover:bg-yellow-400/10">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white font-sans">
-                        {book.title}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {book.author}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        ${book.price}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {book.image ? (
-                          <img
-                            src={book.image}
-                            alt={book.title}
-                            className="h-10 w-10 rounded-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-sm text-yellow-400/70 font-sans">
-                            No Image
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            book.status === "Active"
-                              ? "bg-green-400/20 text-green-400"
-                              : "bg-red-400/20 text-red-400"
-                          }`}
-                        >
-                          {book.status === "Active"
-                            ? "In Stock"
-                            : "Out of Stock"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {categories.find(
-                          (cat) => cat.categoryId === book.categoryId
-                        )?.categoryName || "Unknown Category"}
-                      </td>
-                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {book.language || "N/A"}
-                      </td> */}
-                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {book.publisherName || "N/A"}
-                      </td> */}
-                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {book.publicationYear || "N/A"}
-                      </td> */}
-                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {book.pages || "N/A"}
-                      </td> */}
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        {book.pdf ? (
-                          <button
-                            onClick={() => {
-                              setPdfBookId(book.bookId);
-                              setShowPdfModal(true);
-                            }}
-                            className="bg-gradient-to-br from-blue-400 to-blue-600 text-white px-2 py-1 rounded-lg hover:opacity-90 transition-opacity"
-                          >
-                            View PDF
-                          </button>
-                        ) : (
-                          <span className="text-yellow-400/70">No PDF</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right">
-                        <div className="flex gap-2 justify-end">
-                          <button
-                            onClick={() => {
-                              setSelectedBook(book);
-                              setShowViewModal(true);
-                            }}
-                            className="bg-gradient-to-br from-green-400 to-emerald-600 text-white px-2 py-1 rounded-lg hover:opacity-90 transition-opacity"
-                          >
-                            <EyeIcon className="h-5 w-5" />
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedBook(book);
-                              setShowUpdateModal(true);
-                            }}
-                            className="bg-gradient-to-br from-cyan-500 to-sky-600 text-white px-2 py-1 rounded-lg hover:opacity-90 transition-opacity"
-                          >
-                            <EditIcon className="h-5 w-5" />
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedBook(book);
-                              setShowDeleteModal(true);
-                            }}
-                            className="bg-gradient-to-br from-amber-500 to-orange-600 text-white px-2 py-1 rounded-lg hover:opacity-90 transition-opacity"
-                          >
-                            <Trash2Icon className="h-5 w-5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+</div>
         </div>
       </main>
 
@@ -642,7 +611,7 @@ const ManageBooks = () => {
                     {selectedBook.author}
                   </p>
                   <p className="text-sm font-medium mt-2 bg-black/50 inline-block px-3 py-1 rounded-full">
-                    ${selectedBook.price} -{" "}
+                    Rs.{selectedBook.price} -{" "}
                     {selectedBook.status === "Active"
                       ? "In Stock"
                       : "Out of Stock"}
@@ -729,7 +698,7 @@ const ManageBooks = () => {
                         Price:
                       </span>
                       <p className="text-md font-semibold text-white font-sans">
-                        ${selectedBook.price}
+                        Rs.{selectedBook.price}
                       </p>
                     </div>
                     <div className="flex items-center">
@@ -1007,7 +976,8 @@ const ManageBooks = () => {
                     })
                   }
                 />
-                {selectedBook.image && typeof selectedBook.image !== "string" ? (
+                {selectedBook.image &&
+                typeof selectedBook.image !== "string" ? (
                   <img
                     src={URL.createObjectURL(selectedBook.image)}
                     alt={selectedBook.title}
@@ -1080,8 +1050,8 @@ const ManageBooks = () => {
                   }
                   required
                 >
-                  <option value="Active">In Stock</option>
-                  <option value="Inactive">Out of Stock</option>
+                  <option value="Active" className="text-black">In Stock</option>
+                  <option value="Inactive" className="text-black">Out of Stock</option>
                 </select>
               </div>
               <div className="mb-4">
@@ -1099,9 +1069,9 @@ const ManageBooks = () => {
                   }
                   required
                 >
-                  <option value="">Select Category</option>
+                  <option value="" className="text-black">Select Category</option>
                   {categories.map((category) => (
-                    <option
+                    <option className="text-black"
                       key={category.categoryId}
                       value={category.categoryId}
                     >
@@ -1133,7 +1103,7 @@ const ManageBooks = () => {
       {selectedBook && showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-black/70 backdrop-blur-xl rounded-xl p-6 w-full max-w-sm border border-yellow-400/50">
-            <h2 className="text-xl font-bold text-white font-sans bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600 mb-4">
+            <h2 className="text-xl font-bold text-white font-sans bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 mb-4">
               Delete Book
             </h2>
             <p className="text-sm text-white font-sans mb-6">
@@ -1164,7 +1134,7 @@ const ManageBooks = () => {
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-black/70 backdrop-blur-xl rounded-xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto border border-yellow-400/50">
-            <h2 className="text-xl font-bold text-white font-sans bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600 mb-4">
+            <h2 className="text-xl font-bold text-white font-sans bg-clip-text  bg-gradient-to-r from-yellow-400 to-yellow-600 mb-4">
               Add New Book
             </h2>
             <form onSubmit={handleAddBook}>
@@ -1362,7 +1332,7 @@ const ManageBooks = () => {
                 )}
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-yellow-400 font-sans">
+                <label className=" block text-sm font-medium text-yellow-400 font-sans">
                   Stock Status
                 </label>
                 <select
@@ -1373,8 +1343,12 @@ const ManageBooks = () => {
                   }
                   required
                 >
-                  <option value="Active">In Stock</option>
-                  <option value="Inactive">Out of Stock</option>
+                  <option value="Active" className="text-black">
+                    In Stock
+                  </option>
+                  <option value="Inactive" className="text-black">
+                    Out of Stock
+                  </option>
                 </select>
               </div>
               <div className="mb-4">
@@ -1389,9 +1363,12 @@ const ManageBooks = () => {
                   }
                   required
                 >
-                  <option value="">Select Category</option>
+                  <option value="" className="text-black">
+                    Select Category
+                  </option>
                   {categories.map((category) => (
                     <option
+                      className="text-black"
                       key={category.categoryId}
                       value={category.categoryId}
                     >

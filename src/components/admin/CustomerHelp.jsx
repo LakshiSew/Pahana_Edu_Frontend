@@ -149,98 +149,98 @@ const CustomerHelp = () => {
           </div>
         </div>
 
-        <motion.div
-          className="bg-black/70 backdrop-blur-xl rounded-xl border border-yellow-400/50 shadow-lg"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="p-4 border-b border-yellow-400/30">
-            <h2 className="text-xl font-bold text-white font-sans bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
-              All Help Requests
-            </h2>
-          </div>
-          <div className="overflow-x-auto">
-            {filteredRequests.length === 0 ? (
-              <div className="p-8 text-center text-white font-sans">
-                No help requests found.
-              </div>
-            ) : (
-              <table className="min-w-full divide-y divide-yellow-400/30">
-                <thead className="bg-black/50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
-                      ID
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
-                      Customer Name
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
-                      Email
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
-                      Customer Message
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-yellow-400/30">
-                  {filteredRequests.map((request, index) => (
-                    <motion.tr
-                      key={request.id}
-                      className="hover:bg-yellow-400/10"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: index * 0.1 }}
+       <motion.div
+    className="bg-black/70 backdrop-blur-xl rounded-xl border border-yellow-400/50 shadow-lg"
+    initial={{ y: 20, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    transition={{ duration: 0.6 }}
+  >
+    <div className="p-4 border-b border-yellow-400/30">
+      <h2 className="text-xl font-bold text-white font-sans bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
+        All Help Requests
+      </h2>
+    </div>
+    <div className="overflow-x-auto">
+      {filteredRequests.length === 0 ? (
+        <div className="p-8 text-center text-white font-sans">
+          No help requests found.
+        </div>
+      ) : (
+        <table className="min-w-full divide-y divide-yellow-400/30">
+          <thead className="bg-black/50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
+                S.No
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
+                Customer Name
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
+                Email
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
+                Customer Message
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
+                Status
+              </th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-yellow-400 uppercase tracking-wider font-sans">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-yellow-400/30">
+            {filteredRequests.map((request, index) => (
+              <motion.tr
+                key={request.id}
+                className="hover:bg-yellow-400/10"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+              >
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white font-sans">
+                  {index + 1}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+                  {request.customerName}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+                  {request.email}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+                  {request.message}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusStyles(
+                      request.status
+                    )}`}
+                  >
+                    {request.status}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right">
+                  <div className="flex gap-2 justify-end">
+                    <motion.button
+                      className="text-blue-400 hover:text-blue-500 transition-colors"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => {
+                        setSelectedRequest(request);
+                        setShowReplyModal(true);
+                      }}
                     >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white font-sans">
-                        {request.id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {request.customerName}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {request.email}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {request.message}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusStyles(
-                            request.status
-                          )}`}
-                        >
-                          {request.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right">
-                        <div className="flex gap-2 justify-end">
-                          <motion.button
-                            className="text-blue-400 hover:text-blue-500 transition-colors"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => {
-                              setSelectedRequest(request);
-                              setShowReplyModal(true);
-                            }}
-                          >
-                            <EyeIcon className="h-5 w-5" />
-                          </motion.button>
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
-        </motion.div>
+                      <EyeIcon className="h-5 w-5" />
+                    </motion.button>
+                  </div>
+                </td>
+              </motion.tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  </motion.div>
       </main>
 
       {showReplyModal && selectedRequest && (
