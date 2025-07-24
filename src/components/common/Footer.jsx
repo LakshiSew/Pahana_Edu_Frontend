@@ -11,6 +11,15 @@ const Footer = () => {
     setEmail("");
   };
 
+  // Define navigation links explicitly
+  const quickLinks = [
+    { name: "Shop Books", path: "/productList" },
+    { name: "Shop Accessories", path: "/productList" },
+    { name: "Privacy Policy", path: "/privacypolicy" },
+    { name: "Terms of Service", path: "/termsofservice" },
+    { name: "Contact", path: "/contactus" },
+  ];
+
   return (
     <footer className="relative bg-gradient-to-b from-blue-50 to-white pt-10 pb-16 overflow-hidden">
       {/* Decorative Wave Background */}
@@ -50,19 +59,13 @@ const Footer = () => {
               Quick Links
             </h3>
             <ul className="space-y-2 text-gray-600 font-sans">
-              {[
-                "Shop Books",
-                "Stationery",
-                "Privacy Policy",
-                "Terms of Service",
-                "Contact",
-              ].map((link) => (
-                <li key={link}>
+              {quickLinks.map((link) => (
+                <li key={link.name}>
                   <Link
-                    to={`/${link.toLowerCase().replace(/\s/g, "")}`}
+                    to={link.path}
                     className="hover:text-yellow-400 transition-colors duration-200 flex items-center gap-2"
                   >
-                    <ArrowRight className="w-4 h-4" /> {link}
+                    <ArrowRight className="w-4 h-4" /> {link.name}
                   </Link>
                 </li>
               ))}
@@ -123,12 +126,12 @@ const Footer = () => {
               recommendations!
             </p>
           </div>
-          <a
-            href="/shop"
+          <Link
+            to="/productList"
             className="mt-4 md:mt-0 bg-yellow-400 text-black font-semibold px-6 py-2 rounded-md hover:bg-yellow-500 transition-colors duration-300 flex items-center gap-2"
           >
             Shop Now <Phone className="w-5 h-5" />
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -136,13 +139,13 @@ const Footer = () => {
       <div className="absolute bottom-0 left-0 w-full h-14 bg-gradient-to-r from-yellow-400 to-yellow-500 flex items-center justify-center px-4 z-20">
         <p className="text-sm text-black text-center font-sans">
           © 2025 Pahana Edu. All Rights Reserved. |{" "}
-          <a href="/privacypolicy" className="hover:underline">
+          <Link to="/privacypolicy" className="hover:underline">
             Privacy Policy
-          </a>{" "}
+          </Link>{" "}
           |{" "}
-          <a href="/termsofservice" className="hover:underline">
+          <Link to="/termsofservice" className="hover:underline">
             Terms of Service
-          </a>
+          </Link>
         </p>
       </div>
     </footer>
