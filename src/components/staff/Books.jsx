@@ -247,12 +247,15 @@ const Books = () => {
           <div className="overflow-x-auto">
             {filteredBooks.length === 0 ? (
               <div className="p-8 text-center text-white font-sans">
-                No books found.
+              No books found.
               </div>
             ) : (
               <table className="min-w-full divide-y divide-yellow-400/30">
                 <thead className="bg-black/50">
                   <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+                      S.No
+                    </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
                       Title
                     </th>
@@ -283,17 +286,17 @@ const Books = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
                       Pages
                     </th> */}
-                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      PDF
-                    </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider font-sans">
                       Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-yellow-400/30">
-                  {filteredBooks.map((book) => (
+                  {filteredBooks.map((book, index) => (
                     <tr key={book.bookId} className="hover:bg-yellow-400/10">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white font-sans">
+                        {index + 1}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white font-sans">
                         {book.title}
                       </td>
@@ -333,33 +336,6 @@ const Books = () => {
                         {categories.find(
                           (cat) => cat.categoryId === book.categoryId
                         )?.categoryName || "Unknown Category"}
-                      </td>
-                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {book.language || "N/A"}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {book.publisherName || "N/A"}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {book.publicationYear || "N/A"}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        {book.pages || "N/A"}
-                      </td> */}
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        {book.pdf ? (
-                          <button
-                            onClick={() => {
-                              setPdfBookId(book.bookId);
-                              setShowPdfModal(true);
-                            }}
-                            className="bg-gradient-to-br from-blue-400 to-blue-600 text-white px-2 py-1 rounded-lg hover:opacity-90 transition-opacity"
-                          >
-                            View PDF
-                          </button>
-                        ) : (
-                          <span className="text-yellow-400/70">No PDF</span>
-                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <div className="flex gap-2 justify-end">

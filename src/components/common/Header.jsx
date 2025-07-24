@@ -609,7 +609,7 @@ const Header = ({ showOnlyNav = false }) => {
         <div className="w-full max-w-full flex justify-between items-center px-4 md:pr-2 md:pl-8">
           <p className="flex items-center gap-2 text-sm font-medium tracking-wide">
             <Check className="h-5 w-5 text-yellow-400" />
-            Serving Sri Lanka’s Learning Needs with Pride
+            Your Trusted Partner in Education, Learning, and Creativity.
           </p>
           <div className="flex justify-end items-center gap-3">
             <Link
@@ -700,26 +700,27 @@ const Header = ({ showOnlyNav = false }) => {
                   <User className="h-5 w-5" />
                 </button>
                 {isUserOpen && (
-                  <ul className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-xl border border-yellow-200 z-10">
-                    <li>
-                      <Link
-                        to="/customerDashboard"
-                        className="block px-3 py-1 text-sm text-black hover:bg-yellow-50 hover:text-yellow-600 hover:underline cursor-pointer transition-colors duration-200"
-                        onClick={() => setIsUserOpen(false)}
-                      >
-                        Account
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        to="/"
-                        className="block px-3 py-1 text-sm text-black hover:bg-yellow-50 hover:text-yellow-600 hover:underline cursor-pointer transition-colors duration-200"
-                        onClick={handleLogout}
-                      >
-                        Logout
-                      </Link>
-                    </li>
-                  </ul>
+                    <ul className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-xl border border-yellow-200 z-10">
+                      <li>
+                        <Link
+                          to="/customerDashboard"
+                          className="block px-3 py-1 text-sm text-black hover:bg-yellow-50 hover:text-yellow-600 cursor-pointer transition-colors duration-200"
+                          onClick={() => setIsUserOpen(false)}
+                        >
+                          Account
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/"
+                          className="block px-3 py-1 text-sm text-black hover:bg-yellow-50 hover:text-yellow-600 cursor-pointer transition-colors duration-200"
+                          onClick={handleLogout}
+                        >
+                          Logout
+                        </Link>
+                      </li>
+                    </ul>
+
                 )}
               </div>
             )}

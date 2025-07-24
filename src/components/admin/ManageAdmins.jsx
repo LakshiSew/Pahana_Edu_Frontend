@@ -217,7 +217,7 @@ const ManageAdmins = () => {
       </header>
 
       <main className="flex-1 p-6 z-[2]">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 ml-100">
           {stats.map((stat) => (
             <div
               key={stat.id}

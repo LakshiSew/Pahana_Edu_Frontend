@@ -194,11 +194,11 @@ const StaffDashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <p className="text-3xl text-black font-sans bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 mb-2">
-  Keep track of key metrics and stay updated on pending orders to provide seamless service.
+          <p className="text-3xl text-black font-sans bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 mb-10">
+ Stay on top of key metrics and manage orders efficiently to ensure smooth operations.
 </p>
-<p className="text-xl text-gray-600 font-sans">
-  Your dedication ensures every customer gets the best experience at Pahana Edu Bookshop. Let's continue to deliver exceptional service!
+<p className="text-xl text-gray-600 font-sans mb-10">
+Your commitment plays a vital role in delivering outstanding service and creating a memorable experience for every customer at Pahana Edu Bookshop. Let’s continue raising the standard together!
 </p>
 
         </motion.div>

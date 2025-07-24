@@ -26,13 +26,14 @@ const ManageOrders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch orders on mount
+  // Fetch orders and bill details to get product names and quantities
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) throw new Error("No authentication token found");
 
+        // Fetch all orders
         const ordersResponse = await axios.get(
           "http://localhost:8080/allorders",
           {
@@ -42,8 +43,76 @@ const ManageOrders = () => {
             },
           }
         );
-        setOrders(ordersResponse.data);
+        console.log("All orders response:", JSON.stringify(ordersResponse.data, null, 2));
 
+        // Fetch bill details for each order to get product names and quantities
+        const ordersWithProducts = await Promise.all(
+          ordersResponse.data.map(async (order) => {
+            try {
+              const billResponse = await axios.get(
+                `http://localhost:8080/viewbill/${order.id}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+              console.log(`Bill response for order ${order.id}:`, JSON.stringify(billResponse.data, null, 2));
+              const products = billResponse.data.products?.length
+                ? billResponse.data.products.map((product, index) => {
+                    const quantity = Number(order.productQuantities?.[product.id] ?? product.quantity ?? 1);
+                    if (isNaN(quantity) || quantity <= 0) {
+                      console.warn(`Invalid quantity for product ${product.name || "Unknown"} in order ${order.id}: ${quantity}`);
+                    }
+                    return {
+                      id: product.id || `product-${index}`,
+                      name: product.name || "Unknown Product",
+                      type: product.type || order.productTypes?.[product.id] || "Unknown",
+                      quantity: isNaN(quantity) || quantity <= 0 ? 1 : quantity,
+                      price: Number(product.price) || 0,
+                      discount: Number(product.discount) || 0,
+                      finalPrice: Number(product.finalPrice) || 0,
+                    };
+                  })
+                : (order.productIds || []).map((id, index) => {
+                    const quantity = Number(order.productQuantities?.[id] ?? 1);
+                    console.warn(`No bill products for order ${order.id}, falling back to product ID: ${id}`);
+                    return {
+                      id: id,
+                      name: `Product ID: ${id} (Details unavailable)`,
+                      type: order.productTypes?.[id] || "Unknown",
+                      quantity: isNaN(quantity) || quantity <= 0 ? 1 : quantity,
+                      price: 0,
+                      discount: 0,
+                      finalPrice: 0,
+                    };
+                  });
+              return {
+                ...order,
+                products,
+                totalPrice: Number(billResponse.data.finalTotalPrice) || order.totalPrice || 0,
+              };
+            } catch (err) {
+              console.error(`Failed to fetch bill for order ${order.id}:`, err);
+              const products = (order.productIds || []).map((id, index) => {
+                const quantity = Number(order.productQuantities?.[id] ?? 1);
+                return {
+                  id: id,
+                  name: `Product ID: ${id} (Details unavailable)`,
+                  type: order.productTypes?.[id] || "Unknown",
+                  quantity: isNaN(quantity) || quantity <= 0 ? 1 : quantity,
+                  price: 0,
+                  discount: 0,
+                  finalPrice: 0,
+                };
+              });
+              return { ...order, products, totalPrice: order.totalPrice || 0 };
+            }
+          })
+        );
+
+        setOrders(ordersWithProducts);
         setLoading(false);
       } catch (err) {
         setError(err.message || "Failed to fetch orders");
@@ -67,7 +136,7 @@ const ManageOrders = () => {
           if (!token) throw new Error("No authentication token found");
 
           const response = await axios.get(
-            `http://localhost:8080/generatebill/${billOrderId}`,
+            `http://localhost:8080/viewbill/${billOrderId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -75,9 +144,10 @@ const ManageOrders = () => {
               },
             }
           );
-
+          console.log(`Bill content for order ${billOrderId}:`, JSON.stringify(response.data, null, 2));
           setBillContent(response.data);
         } catch (err) {
+          console.error(`Failed to fetch bill for order ${billOrderId}:`, err);
           toast.error("Failed to load bill", {
             position: "top-right",
             autoClose: 3000,
@@ -90,7 +160,6 @@ const ManageOrders = () => {
       fetchBill();
     }
 
-    // Cleanup
     return () => {
       setBillContent(null);
     };
@@ -114,9 +183,56 @@ const ManageOrders = () => {
         }
       );
 
+      // Fetch bill to update product names and quantities after status change
+      const billResponse = await axios.get(
+        `http://localhost:8080/viewbill/${selectedOrder.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(`Updated bill response for order ${selectedOrder.id}:`, JSON.stringify(billResponse.data, null, 2));
+      const products = billResponse.data.products?.length
+        ? billResponse.data.products.map((product, index) => {
+            const quantity = Number(selectedOrder.productQuantities?.[product.id] ?? product.quantity ?? 1);
+            if (isNaN(quantity) || quantity <= 0) {
+              console.warn(`Invalid quantity for product ${product.name || "Unknown"} in order ${selectedOrder.id}: ${quantity}`);
+            }
+            return {
+              id: product.id || `product-${index}`,
+              name: product.name || "Unknown Product",
+              type: product.type || selectedOrder.productTypes?.[product.id] || "Unknown",
+              quantity: isNaN(quantity) || quantity <= 0 ? 1 : quantity,
+              price: Number(product.price) || 0,
+              discount: Number(product.discount) || 0,
+              finalPrice: Number(product.finalPrice) || 0,
+            };
+          })
+        : (selectedOrder.productIds || []).map((id, index) => {
+            const quantity = Number(selectedOrder.productQuantities?.[id] ?? 1);
+            console.warn(`No bill products for order ${selectedOrder.id} after update, falling back to product ID: ${id}`);
+            return {
+              id: id,
+              name: `Product ID: ${id} (Details unavailable)`,
+              type: selectedOrder.productTypes?.[id] || "Unknown",
+              quantity: isNaN(quantity) || quantity <= 0 ? 1 : quantity,
+              price: 0,
+              discount: 0,
+              finalPrice: 0,
+            };
+          });
+
       setOrders(
         orders.map((order) =>
-          order.id === selectedOrder.id ? response.data : order
+          order.id === selectedOrder.id
+            ? {
+                ...response.data,
+                products,
+                totalPrice: Number(billResponse.data.finalTotalPrice) || response.data.totalPrice || 0,
+              }
+            : order
         )
       );
       setShowUpdateModal(false);
@@ -170,7 +286,10 @@ const ManageOrders = () => {
       (order.id?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
       (order.customerEmail?.toLowerCase() || "").includes(
         searchTerm.toLowerCase()
-      );
+      ) ||
+      (order.products?.some((p) =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ) || false);
     const matchesStatus =
       statusFilter === "All" || order.status === statusFilter;
     return matchesSearch && matchesStatus;
@@ -215,6 +334,12 @@ const ManageOrders = () => {
       bgTo: "to-rose-600",
     },
   ];
+
+  // Format price
+  const formatPrice = (price) => {
+    const numPrice = parseFloat(price);
+    return isNaN(numPrice) ? "N/A" : `Rs. ${numPrice.toFixed(2)}`;
+  };
 
   if (loading) {
     return (
@@ -285,7 +410,7 @@ const ManageOrders = () => {
             <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-400 h-5 w-5" />
             <input
               type="text"
-              placeholder="Search orders by ID, customer, or email..."
+              placeholder="Search orders by ID, customer, email, or product..."
               className="pl-10 pr-4 py-2 bg-white/10 border border-yellow-400/50 rounded-lg w-full text-white placeholder-yellow-400/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 font-sans"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -296,7 +421,7 @@ const ManageOrders = () => {
         <div className="bg-black/70 backdrop-blur-xl rounded-xl border border-yellow-400/50 shadow-lg">
           <div className="p-4 border-b border-yellow-400/30 flex justify-between items-center">
             <h2 className="text-xl font-semibold text-white font-sans">
-              Orders
+              All Orders
             </h2>
             <select
               value={statusFilter}
@@ -319,7 +444,7 @@ const ManageOrders = () => {
                 <thead className="bg-black/50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
-                      Order ID
+                      Serial Number
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
                       Customer Name
@@ -334,6 +459,9 @@ const ManageOrders = () => {
                       Total Price
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+                      Products
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
                       Status
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider font-sans">
@@ -342,10 +470,10 @@ const ManageOrders = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-yellow-400/30">
-                  {filteredOrders.map((order) => (
+                  {filteredOrders.map((order, index) => (
                     <tr key={order.id} className="hover:bg-yellow-400/10">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white font-sans">
-                        {order.id}
+                        {index + 1}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
                         {order.customerName}
@@ -357,7 +485,18 @@ const ManageOrders = () => {
                         {new Date(order.orderDate).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
-                        ${order.totalPrice}
+                        {formatPrice(order.totalPrice)}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-white font-sans">
+                        {order.products?.length > 0 ? (
+                          <ul className="list-disc pl-4">
+                            {order.products.map((p, index) => (
+                              <li key={index}>{p.name} (x{p.quantity})</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          "N/A"
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <span
@@ -448,7 +587,7 @@ const ManageOrders = () => {
                     {selectedOrder.customerName}
                   </p>
                   <p className="text-sm font-medium mt-2 bg-black/50 inline-block px-3 py-1 rounded-full">
-                    ${selectedOrder.totalPrice} - {selectedOrder.status}
+                    {formatPrice(selectedOrder.totalPrice)} - {selectedOrder.status}
                   </p>
                   <button
                     onClick={() => {
@@ -463,90 +602,98 @@ const ManageOrders = () => {
               </div>
             </div>
             <div className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-6 bg-black/50 p-6 rounded-lg border border-yellow-400/50">
-                  <h3 className="text-2xl font-semibold text-yellow-400 font-sans border-b border-yellow-400/30 pb-3">
-                    Order Details
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center">
-                      <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
-                        Order ID:
-                      </span>
-                      <p className="text-md font-semibold text-white font-sans">
-                        {selectedOrder.id}
-                      </p>
+              <div className="space-y-6 bg-black/50 p-6 rounded-lg border border-yellow-400/50">
+                <h3 className="text-2xl font-semibold text-yellow-400 font-sans border-b border-yellow-400/30 pb-3">
+                  Order Details
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
+                      Order ID:
+                    </span>
+                    <p className="text-md font-semibold text-white font-sans">
+                      {selectedOrder.id}
+                    </p>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
+                      Customer Name:
+                    </span>
+                    <p className="text-md font-semibold text-white font-sans">
+                      {selectedOrder.customerName}
+                    </p>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
+                      Email:
+                    </span>
+                    <p className="text-md font-semibold text-white font-sans">
+                      {selectedOrder.customerEmail}
+                    </p>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
+                      Address:
+                    </span>
+                    <p className="text-md font-semibold text-white font-sans">
+                      {selectedOrder.address || "N/A"}
+                    </p>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
+                      Order Date:
+                    </span>
+                    <p className="text-md font-semibold text-white font-sans">
+                      {new Date(selectedOrder.orderDate).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
+                      Total Price:
+                    </span>
+                    <p className="text-md font-semibold text-white font-sans">
+                      {formatPrice(selectedOrder.totalPrice)}
+                    </p>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
+                      Status:
+                    </span>
+                    <p className="text-md font-semibold text-white font-sans">
+                      {selectedOrder.status}
+                    </p>
+                  </div>
+                  <div className="flex items-start">
+                    <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
+                      Products:
+                    </span>
+                    <div className="text-md font-semibold text-white font-sans">
+                      {selectedOrder.products?.length > 0 ? (
+                        <ul className="list-disc pl-4">
+                          {selectedOrder.products.map((p, index) => (
+                            <li key={index}>
+                              {p.name} (x{p.quantity})
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p>N/A</p>
+                      )}
                     </div>
-                    <div className="flex items-center">
-                      <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
-                        Customer Name:
-                      </span>
-                      <p className="text-md font-semibold text-white font-sans">
-                        {selectedOrder.customerName}
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
-                        Email:
-                      </span>
-                      <p className="text-md font-semibold text-white font-sans">
-                        {selectedOrder.customerEmail}
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
-                        Address:
-                      </span>
-                      <p className="text-md font-semibold text-white font-sans">
-                        {selectedOrder.address || "N/A"}
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
-                        Order Date:
-                      </span>
-                      <p className="text-md font-semibold text-white font-sans">
-                        {new Date(selectedOrder.orderDate).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
-                        Total Price:
-                      </span>
-                      <p className="text-md font-semibold text-white font-sans">
-                        ${selectedOrder.totalPrice}
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
-                        Status:
-                      </span>
-                      <p className="text-md font-semibold text-white font-sans">
-                        {selectedOrder.status}
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
-                        Products:
-                      </span>
-                      <p className="text-md font-semibold text-white font-sans">
-                        {selectedOrder.productIds?.join(", ") || "N/A"}
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
-                        Bill:
-                      </span>
-                      <button
-                        onClick={() => {
-                          setBillOrderId(selectedOrder.id);
-                          setShowBillModal(true);
-                        }}
-                        className="text-md font-semibold text-blue-400 hover:underline font-sans"
-                      >
-                        View Bill
-                      </button>
-                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-yellow-400 w-28 font-sans">
+                      Bill:
+                    </span>
+                    <button
+                      onClick={() => {
+                        setBillOrderId(selectedOrder.id);
+                        setShowBillModal(true);
+                      }}
+                      className="text-md font-semibold text-blue-400 hover:underline font-sans"
+                    >
+                      View Bill
+                    </button>
                   </div>
                 </div>
               </div>
@@ -558,7 +705,7 @@ const ManageOrders = () => {
       {selectedOrder && showUpdateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-black/70 backdrop-blur-xl rounded-xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto border border-yellow-400/50">
-            <h2 className="text-xl font-bold text-white font-sans bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600 mb-4">
+            <h2 className="text-xl font-bold text-white font-sans bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 mb-4">
               Update Order Status
             </h2>
             <form onSubmit={handleUpdateOrder}>
@@ -577,9 +724,9 @@ const ManageOrders = () => {
                   }
                   required
                 >
-                  <option value="Pending">Pending</option>
-                  <option value="Confirmed">Confirmed</option>
-                  <option value="Canceled">Canceled</option>
+                  <option value="Pending" className="text-black">Pending</option>
+                  <option value="Confirmed" className="text-black">Confirmed</option>
+                  <option value="Canceled" className="text-black">Canceled</option>
                 </select>
               </div>
               <div className="flex justify-end gap-2">
@@ -605,7 +752,7 @@ const ManageOrders = () => {
       {selectedOrder && showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-black/70 backdrop-blur-xl rounded-xl p-6 w-full max-w-sm border border-yellow-400/50">
-            <h2 className="text-xl font-bold text-white font-sans bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600 mb-4">
+            <h2 className="text-xl font-bold text-white font-sans bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 mb-4">
               Delete Order
             </h2>
             <p className="text-sm text-white font-sans mb-6">
@@ -637,8 +784,8 @@ const ManageOrders = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-black/70 backdrop-blur-xl rounded-xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-yellow-400/50">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-white font-sans bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600">
-                Bill Preview
+              <h2 className="text-xl font-bold text-white font-sans bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
+                Bill for Order #{billContent.orderId}
               </h2>
               <button
                 onClick={() => {
@@ -651,10 +798,84 @@ const ManageOrders = () => {
                 <XCircleIcon className="h-7 w-7" />
               </button>
             </div>
-            <div className="w-full bg-white/10 p-4 rounded-lg">
-              <pre className="text-white font-sans whitespace-pre-wrap">
-                {billContent}
-              </pre>
+            <div className="bg-white/10 p-4 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <p className="text-white">
+                  <strong>Customer:</strong> {billContent.customerName}
+                </p>
+                <p className="text-white">
+                  <strong>Email:</strong> {billContent.customerEmail}
+                </p>
+                <p className="text-white">
+                  <strong>Phone:</strong> {billContent.customerPhone}
+                </p>
+                <p className="text-white">
+                  <strong>Address:</strong> {billContent.address}
+                </p>
+                <p className="text-white">
+                  <strong>Order Date:</strong>{" "}
+                  {new Date(billContent.orderDate).toLocaleDateString()}
+                </p>
+                <p className="text-white">
+                  <strong>Status:</strong> {billContent.status}
+                </p>
+              </div>
+              <table className="min-w-full divide-y divide-yellow-400/30">
+                <thead className="bg-black/50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+                      Product
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+                      Quantity
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+                      Price
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+                      Discount (%)
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider font-sans">
+                      Final Price
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-yellow-400/30">
+                  {billContent.products.map((product, index) => (
+                    <tr key={index}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+                        {product.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+                        {product.quantity}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+                        {formatPrice(product.price)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+                        {Number(product.discount).toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
+                        {formatPrice(product.finalPrice)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="text-right text-white mt-4">
+                <p>
+                  <strong>Total Before Discount:</strong>{" "}
+                  {formatPrice(billContent.totalPriceBeforeDiscount)}
+                </p>
+                <p>
+                  <strong>Total Discount:</strong>{" "}
+                  {formatPrice(billContent.totalDiscount)}
+                </p>
+                <p>
+                  <strong>Final Total:</strong>{" "}
+                  {formatPrice(billContent.finalTotalPrice)}
+                </p>
+              </div>
             </div>
           </div>
         </div>
