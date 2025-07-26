@@ -7,16 +7,10 @@ import Categories from "./Categories";
 import ManageOrder from "./ManageOrder";
 import CustomerHelp from "./CustomerHelp";
 
-// import ManageAdmins from "./ManageAdmins";
-// import ManageCategories from "./ManageCategories";
-// import AdminBookings from "./AdminBookings";
-// import ManageCabs from "./ManageCabs";
-
 const StaffRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<StaffLayout />}>
-        {/* Default route when visiting '/' */}
         <Route index element={<StaffDashboard />} />
         <Route path="books" element={<Books />} />
         <Route path="accessories" element={<Accessories />} />
