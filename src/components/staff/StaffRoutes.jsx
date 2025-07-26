@@ -5,6 +5,7 @@ import Books from "./Books";
 import Accessories from "./Accessories";
 import Categories from "./Categories";
 import ManageOrder from "./ManageOrder";
+import CustomerHelp from "./CustomerHelp";
 
 // import ManageAdmins from "./ManageAdmins";
 // import ManageCategories from "./ManageCategories";
@@ -17,11 +18,11 @@ const StaffRoutes = () => {
       <Route path="/" element={<StaffLayout />}>
         {/* Default route when visiting '/' */}
         <Route index element={<StaffDashboard />} />
-         <Route path="books" element={<Books />} />
-          <Route path="accessories" element={<Accessories />} /> 
-           <Route path="categories" element={<Categories />} />
-            <Route path="orders" element={<ManageOrder />} />
-  
+        <Route path="books" element={<Books />} />
+        <Route path="accessories" element={<Accessories />} />
+        <Route path="categories" element={<Categories />} />
+        <Route path="orders" element={<ManageOrder />} />
+        <Route path="reports" element={<CustomerHelp />} />
       </Route>
     </Routes>
   );

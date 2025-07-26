@@ -29,6 +29,8 @@ import StaffRoutes from "./components/staff/StaffRoutes";
 import FeedbackForm from "./components/pages/FeedbackForm";
 import PrivacyPolicy from "./components/pages/PrivacyPolicy";
 import TermsOfService from "./components/pages/TermsOfService";
+import ForgotPassword from "./authentication/ForgotPassword";
+import ResetPassword from "./authentication/ResetPassword";
 
 function App() {
   const location = useLocation();
@@ -89,6 +91,7 @@ function App() {
           <Route path="/customerDashboard" element={<CustomerDashboard />} />
           <Route path="/privacypolicy" element={<PrivacyPolicy />} />
           <Route path="/termsofservice" element={<TermsOfService />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           <Route path="/admin/*" element={<AdminRoutes />} />
           <Route path="/staff/*" element={<StaffRoutes />} />

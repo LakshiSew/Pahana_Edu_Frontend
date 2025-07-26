@@ -158,6 +158,7 @@ const menuItems = [
   { icon: FileText, label: "Accessories", path: "/staff/accessories" },
   { icon: Tag, label: "Categories", path: "/staff/categories" },
   { icon: ShoppingBag, label: "Orders", path: "/staff/orders" },
+  { icon: FileText, label: "Inquiries", path: "/staff/reports" },
 ];
 
 const StaffSidebar = ({ collapsed, setCollapsed }) => {

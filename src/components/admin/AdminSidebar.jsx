@@ -161,7 +161,7 @@ const menuItems = [
   { icon: ShoppingBag, label: "Orders", path: "/admin/orders" },
   { icon: Users, label: "Customers", path: "/admin/customers" },
   { icon: FileText, label: "Book Suggestions", path: "/admin/suggestions" },
-  { icon: FileText, label: "Reports", path: "/admin/reports" },
+  { icon: FileText, label: "Inquiries", path: "/admin/reports" },
   { icon: FileText, label: "Admins", path: "/admin/admins" },
 ];
 
