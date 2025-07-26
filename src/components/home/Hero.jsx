@@ -8,10 +8,9 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-// Define the base URL for the backend
+
 const API_URL = "http://localhost:8080";
 
-// Fallback image for categories with missing or invalid images
 const FALLBACK_IMAGE = "/src/assets/images/back.jpg";
 
 const Hero = () => {
@@ -25,7 +24,7 @@ const Hero = () => {
         const response = await axios.get(`${API_URL}/auth/getallcategories`);
         const activeCategories = response.data
           .filter(category => category.status === "Active")
-          .slice(0, 6); // Limit to 6 active categories
+          .slice(0, 6); 
         setCategories(activeCategories);
         setLoading(false);
       } catch (err) {
