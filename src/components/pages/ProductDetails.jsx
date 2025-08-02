@@ -760,8 +760,8 @@ const ProductDetails = () => {
                 <p><strong>Brand:</strong> {product.brand || 'N/A'}</p>
               )}
               <p><strong>Status:</strong> {product.status}</p>
-              <p><strong>Created:</strong> {new Date(product.createdAt).toLocaleDateString()}</p>
-              <p><strong>Updated:</strong> {new Date(product.updatedAt).toLocaleDateString()}</p>
+              {/* <p><strong>Created:</strong> {new Date(product.createdAt).toLocaleDateString()}</p>
+              <p><strong>Updated:</strong> {new Date(product.updatedAt).toLocaleDateString()}</p> */}
             </div>
           </div>
         </div>

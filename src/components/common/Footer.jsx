@@ -17,7 +17,7 @@ const Footer = () => {
     { name: "Shop Accessories", path: "/productList" },
     { name: "Privacy Policy", path: "/privacypolicy" },
     { name: "Terms of Service", path: "/termsofservice" },
-    { name: "Contact", path: "/contactus" },
+    { name: "Help Section", path: "/helpsection" },
   ];
 
   return (

@@ -186,10 +186,10 @@ const Books = () => {
       <header className="bg-black/70 backdrop-blur-xl border-b border-yellow-400/30 p-4 flex justify-between items-center z-[2]">
         <div>
           <h1 className="text-2xl font-bold text-white font-sans bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600">
-            Manage Book Products
+            Book Products
           </h1>
           <p className="text-yellow-400/70 font-sans">
-            Oversee and Administer Book Products
+             View Book Products
           </p>
         </div>
       </header>

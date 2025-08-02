@@ -194,10 +194,16 @@ const Accessories = () => {
         />
       </svg>
 
+
       <header className="bg-black/70 backdrop-blur-xl border-b border-yellow-400/30 p-4 flex justify-between items-center z-[2]">
-        <h1 className="text-2xl font-bold text-white font-sans bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600">
-          Manage Accessories
-        </h1>
+        <div>
+          <h1 className="text-2xl font-bold text-white font-sans bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600">
+            Book Accessories
+          </h1>
+          <p className="text-yellow-400/70 font-sans">
+             View All Accessories
+          </p>
+        </div>
       </header>
 
       <main className="flex-1 p-6 z-[2]">
