@@ -14,10 +14,12 @@ import { motion } from "framer-motion";
 // Import available video
 import LoginTutorial from "../../assets/videos/login.mp4";
 // Other video imports (uncomment when videos are available)
-// import RegisterTutorial from "../../assets/videos/register-tutorial.mp4";
-// import PlaceOrderTutorial from "../../assets/videos/place-order-tutorial.mp4";
-// import AskQuestionsTutorial from "../../assets/videos/ask-questions-tutorial.mp4";
-// import FeedbackTutorial from "../../assets/videos/feedback-tutorial.mp4";
+import RegisterTutorial from "../../assets/videos/register.mp4";
+import ForgetPassword from "../../assets/videos/forget password.mp4";
+
+import PlaceOrderTutorial from "../../assets/videos/place order.mp4";
+import AskQuestionsTutorial from "../../assets/videos/ask question.mp4";
+import FeedbackTutorial from "../../assets/videos/Add feedback.mp4";
 // import ManageProfileTutorial from "../../assets/videos/manage-profile-tutorial.mp4";
 
 // Error Boundary Component
@@ -51,13 +53,13 @@ const HelpSection = () => {
   const helpTopics = [
     {
       id: "login",
-      title: "How to Log In",
+      title: "How to Log In the Pahana Edu web site",
       icon: <User className="w-6 h-6 text-yellow-400" />,
       description:
         "Access your Pahana Edu account to manage orders and profile details.",
       steps: [
         "Navigate to the Login page via the top-right user icon.",
-        "Enter your registered email and password.",
+        "Enter your registered username and password.",
         "Click 'Login' to access your account.",
         "If you forget your password, use the 'Forgot Password' link to reset it.",
       ],
@@ -65,7 +67,7 @@ const HelpSection = () => {
     },
     {
       id: "register",
-      title: "How to Register",
+      title: "How to Register with the pahana Edu system",
       icon: <User className="w-6 h-6 text-yellow-400" />,
       description: "Create a new account to start shopping with Pahana Edu.",
       steps: [
@@ -74,7 +76,7 @@ const HelpSection = () => {
         "Submit the form to create your account.",
         "Verify your email (if required) to activate your account.",
       ],
-      videoUrl: null, // Placeholder until video is available
+      videoUrl: RegisterTutorial, // Placeholder until video is available
     },
     {
       id: "place-order",
@@ -87,7 +89,7 @@ const HelpSection = () => {
         "Click 'Add to Cart' on desired items.",
         "Proceed to checkout, enter shipping details, and confirm payment.",
       ],
-      videoUrl: null, // Placeholder until video is available
+      videoUrl: PlaceOrderTutorial, // Placeholder until video is available
     },
     {
       id: "ask-questions",
@@ -101,7 +103,7 @@ const HelpSection = () => {
         "Fill out the inquiry form with your question and details.",
         "Submit to send your query to our team via the /auth/submit endpoint.",
       ],
-      videoUrl: null, // Placeholder until video is available
+      videoUrl: AskQuestionsTutorial, // Placeholder until video is available
     },
     {
       id: "add-feedback",
@@ -114,7 +116,7 @@ const HelpSection = () => {
         "Enter your feedback, rating, and optional image.",
         "Submit to share your review via the /auth/createfeedback endpoint.",
       ],
-      videoUrl: null, // Placeholder until video is available
+      videoUrl: FeedbackTutorial, // Placeholder until video is available
     },
     {
       id: "manage-profile",
@@ -128,6 +130,19 @@ const HelpSection = () => {
         "Use the browser’s print function to print bills.",
       ],
       videoUrl: null, // Placeholder until video is available
+    },
+    {
+      id: "Forget Password",
+      title: "How to reset your password if forget",
+      icon: <FileText className="w-6 h-6 text-yellow-400" />,
+      description: "Update your password with easy way.",
+      steps: [
+        "Log in and go to 'My Profile' from the user menu.",
+        "Update details like name, address, or phone number.",
+        "View order history and select a bill to download or print.",
+        "Use the browser’s print function to print bills.",
+      ],
+      videoUrl: ForgetPassword, // Placeholder until video is available
     },
   ];
 
