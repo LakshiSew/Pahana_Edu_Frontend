@@ -245,7 +245,7 @@ const Accessories = () => {
           </div>
           <div className="flex gap-4 mt-4 md:mt-0">
             <select
-              className="bg-white/10 border border-yellow-400/50 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 font-sans"
+              className="bg-white/10 border border-yellow-400/50 rounded-lg p-2 text-black focus:outline-none focus:ring-2 focus:ring-yellow-400 font-sans"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
@@ -258,9 +258,9 @@ const Accessories = () => {
               value={categoryFilter}
               onChange={handleCategoryFilterChange}
             >
-              <option value="all">All Categories</option>
+              <option value="all" className="text-black" >All Categories</option>
               {categories.map((category) => (
-                <option key={category.categoryId} value={category.categoryId}>
+                <option className="text-black" key={category.categoryId} value={category.categoryId}>
                   {category.categoryName}
                 </option>
               ))}

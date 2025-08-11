@@ -11,16 +11,13 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-// Import available video
 import LoginTutorial from "../../assets/videos/login.mp4";
-// Other video imports (uncomment when videos are available)
 import RegisterTutorial from "../../assets/videos/register.mp4";
 import ForgetPassword from "../../assets/videos/forget password.mp4";
-
 import PlaceOrderTutorial from "../../assets/videos/place order.mp4";
 import AskQuestionsTutorial from "../../assets/videos/ask question.mp4";
 import FeedbackTutorial from "../../assets/videos/Add feedback.mp4";
-// import ManageProfileTutorial from "../../assets/videos/manage-profile-tutorial.mp4";
+import ManageProfileTutorial from "../../assets/videos/Manage profile.mp4";
 
 // Error Boundary Component
 class ErrorBoundary extends Component {
@@ -103,7 +100,7 @@ const HelpSection = () => {
         "Fill out the inquiry form with your question and details.",
         "Submit to send your query to our team via the /auth/submit endpoint.",
       ],
-      videoUrl: AskQuestionsTutorial, // Placeholder until video is available
+      videoUrl: AskQuestionsTutorial, 
     },
     {
       id: "add-feedback",
@@ -116,7 +113,7 @@ const HelpSection = () => {
         "Enter your feedback, rating, and optional image.",
         "Submit to share your review via the /auth/createfeedback endpoint.",
       ],
-      videoUrl: FeedbackTutorial, // Placeholder until video is available
+      videoUrl: FeedbackTutorial,
     },
     {
       id: "manage-profile",
@@ -129,7 +126,7 @@ const HelpSection = () => {
         "View order history and select a bill to download or print.",
         "Use the browser’s print function to print bills.",
       ],
-      videoUrl: null, // Placeholder until video is available
+      videoUrl: ManageProfileTutorial, 
     },
     {
       id: "Forget Password",
@@ -142,7 +139,7 @@ const HelpSection = () => {
         "View order history and select a bill to download or print.",
         "Use the browser’s print function to print bills.",
       ],
-      videoUrl: ForgetPassword, // Placeholder until video is available
+      videoUrl: ForgetPassword, 
     },
   ];
 
