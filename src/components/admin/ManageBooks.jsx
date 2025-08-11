@@ -2243,7 +2243,7 @@ const ManageBooks = () => {
       {selectedBook && showUpdateModal && (
         <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50'>
           <div className='bg-black/70 backdrop-blur-xl rounded-xl p-6 w-full max-w-5xl max-h-[90vh] overflow-y-auto border border-yellow-400/50'>
-            <h2 className='text-xl font-bold text-white font-sans bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600 mb-4'>
+            <h2 className='text-xl font-bold text-white font-sans bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 mb-4'>
               Update Book
             </h2>
             <form onSubmit={handleUpdateBook}>

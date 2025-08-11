@@ -1,6 +1,12 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { PlusIcon, SearchIcon, MoreVerticalIcon, EditIcon, Trash2Icon } from "lucide-react";
+import {
+  PlusIcon,
+  SearchIcon,
+  MoreVerticalIcon,
+  EditIcon,
+  Trash2Icon,
+} from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -51,18 +57,29 @@ const ManageCategories = () => {
       if (!token) {
         throw new Error("No authentication token found");
       }
-      const response = await axios.get("http://localhost:8080/auth/getallcategories", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        "http://localhost:8080/auth/getallcategories",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (response.status === 200) {
-        setCategories(response.data.map((cat) => ({
-          ...cat,
-          status: cat.status || "Inactive",
-        })));
+        setCategories(
+          response.data.map((cat) => ({
+            ...cat,
+            status: cat.status || "Inactive",
+          }))
+        );
       }
     } catch (error) {
-      console.error("Fetch Error:", error.response ? error.response.data : error.message);
-      toast.error("Failed to fetch categories.", { position: "top-right", autoClose: 3000 });
+      console.error(
+        "Fetch Error:",
+        error.response ? error.response.data : error.message
+      );
+      toast.error("Failed to fetch categories.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
@@ -82,21 +99,43 @@ const ManageCategories = () => {
       if (!token) {
         throw new Error("No authentication token found");
       }
-      const response = await axios.post("http://localhost:8080/auth/addcategory", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:8080/auth/addcategory",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       if (response.status === 200) {
-        setCategories([...categories, { ...response.data, status: response.data.status || "Inactive" }]);
+        setCategories([
+          ...categories,
+          { ...response.data, status: response.data.status || "Inactive" },
+        ]);
         setShowAddModal(false);
-        setNewCategory({ categoryName: "", description: "", status: "Active", categoryImage: null, type: "book" });
-        toast.success("Category added successfully!", { position: "top-right", autoClose: 3000 });
+        setNewCategory({
+          categoryName: "",
+          description: "",
+          status: "Active",
+          categoryImage: null,
+          type: "book",
+        });
+        toast.success("Category added successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
       }
     } catch (error) {
-      console.error("Add Error:", error.response ? error.response.data : error.message);
-      toast.error("Failed to add category.", { position: "top-right", autoClose: 3000 });
+      console.error(
+        "Add Error:",
+        error.response ? error.response.data : error.message
+      );
+      toast.error("Failed to add category.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
@@ -115,7 +154,10 @@ const ManageCategories = () => {
     if (selectedCategory.type) {
       formData.append("type", selectedCategory.type); // Include type in the update
     }
-    if (selectedCategory.categoryImage && typeof selectedCategory.categoryImage !== "string") {
+    if (
+      selectedCategory.categoryImage &&
+      typeof selectedCategory.categoryImage !== "string"
+    ) {
       formData.append("categoryImg", selectedCategory.categoryImage);
     } else if (selectedCategory.categoryImg) {
       // Preserve existing image URL by not sending a new file
@@ -127,26 +169,41 @@ const ManageCategories = () => {
       if (!token) {
         throw new Error("No authentication token found");
       }
-      const response = await axios.put(`http://localhost:8080/updatecategory/${selectedCategory.categoryId}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.put(
+        `http://localhost:8080/updatecategory/${selectedCategory.categoryId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       if (response.status === 200) {
         setCategories(
           categories.map((cat) =>
-            cat.categoryId === selectedCategory.categoryId ? { ...response.data, status: response.data.status || "Inactive" } : cat
+            cat.categoryId === selectedCategory.categoryId
+              ? { ...response.data, status: response.data.status || "Inactive" }
+              : cat
           )
         );
         setShowUpdateModal(false);
         setSelectedCategory(null);
-        toast.success("Category updated successfully!", { position: "top-right", autoClose: 3000 });
+        toast.success("Category updated successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
       }
     } catch (error) {
-      console.error("Update Error:", error.response ? error.response.data : error.message);
+      console.error(
+        "Update Error:",
+        error.response ? error.response.data : error.message
+      );
       console.log("Full Error:", error);
-      toast.error("Failed to update category.", { position: "top-right", autoClose: 3000 });
+      toast.error("Failed to update category.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
@@ -156,18 +213,34 @@ const ManageCategories = () => {
       if (!token) {
         throw new Error("No authentication token found");
       }
-      const response = await axios.delete(`http://localhost:8080/deletecategory/${selectedCategory.categoryId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.delete(
+        `http://localhost:8080/deletecategory/${selectedCategory.categoryId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (response.status === 200) {
-        setCategories(categories.filter((cat) => cat.categoryId !== selectedCategory.categoryId));
+        setCategories(
+          categories.filter(
+            (cat) => cat.categoryId !== selectedCategory.categoryId
+          )
+        );
         setShowDeleteModal(false);
         setSelectedCategory(null);
-        toast.success("Category deleted successfully!", { position: "top-right", autoClose: 3000 });
+        toast.success("Category deleted successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
       }
     } catch (error) {
-      console.error("Delete Error:", error.response ? error.response.data : error.message);
-      toast.error("Failed to delete category.", { position: "top-right", autoClose: 3000 });
+      console.error(
+        "Delete Error:",
+        error.response ? error.response.data : error.message
+      );
+      toast.error("Failed to delete category.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
@@ -254,7 +327,10 @@ const ManageCategories = () => {
                   </thead>
                   <tbody className="divide-y divide-yellow-400/30">
                     {filteredCategories.map((category, index) => (
-                      <tr key={category.categoryId} className="hover:bg-yellow-400/10">
+                      <tr
+                        key={category.categoryId}
+                        className="hover:bg-yellow-400/10"
+                      >
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
                           {index + 1}
                         </td>
@@ -279,13 +355,17 @@ const ManageCategories = () => {
                               className="h-10 w-10 rounded-full object-cover"
                             />
                           ) : (
-                            <span className="text-sm text-yellow-400/70 font-sans">No Image</span>
+                            <span className="text-sm text-yellow-400/70 font-sans">
+                              No Image
+                            </span>
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-sans">
                           <span
                             className={`px-2 py-1 rounded-full ${
-                              category.status === "Active" ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"
+                              category.status === "Active"
+                                ? "bg-green-500/20 text-green-400"
+                                : "bg-red-500/20 text-red-400"
                             }`}
                           >
                             {category.status}
@@ -304,7 +384,10 @@ const ManageCategories = () => {
                             </button>
                             <button
                               onClick={() => {
-                                setSelectedCategory({ ...category, categoryImage: null });
+                                setSelectedCategory({
+                                  ...category,
+                                  categoryImage: null,
+                                });
                                 setShowUpdateModal(true);
                               }}
                               className="bg-gradient-to-br from-cyan-500 to-sky-600 text-white px-2 py-1 rounded-lg hover:opacity-90 transition-opacity"
@@ -347,7 +430,10 @@ const ManageCategories = () => {
                     className="mt-1 block w-full bg-white/10 border border-yellow-400/50 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 font-sans"
                     value={newCategory.categoryName}
                     onChange={(e) =>
-                      setNewCategory({ ...newCategory, categoryName: e.target.value })
+                      setNewCategory({
+                        ...newCategory,
+                        categoryName: e.target.value,
+                      })
                     }
                     required
                   />
@@ -360,7 +446,10 @@ const ManageCategories = () => {
                     className="mt-1 block w-full bg-white/10 border border-yellow-400/50 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 font-sans"
                     value={newCategory.description}
                     onChange={(e) =>
-                      setNewCategory({ ...newCategory, description: e.target.value })
+                      setNewCategory({
+                        ...newCategory,
+                        description: e.target.value,
+                      })
                     }
                     required
                   />
@@ -374,7 +463,10 @@ const ManageCategories = () => {
                     accept="image/*"
                     className="mt-1 block w-full bg-white/10 border border-yellow-400/50 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 font-sans file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-yellow-400/20 file:text-yellow-400 hover:file:bg-yellow-400/30"
                     onChange={(e) =>
-                      setNewCategory({ ...newCategory, categoryImage: e.target.files[0] || null })
+                      setNewCategory({
+                        ...newCategory,
+                        categoryImage: e.target.files[0] || null,
+                      })
                     }
                     required
                   />
@@ -391,8 +483,8 @@ const ManageCategories = () => {
                     }
                     required
                   >
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
+                    <option value="Active" className="text-black">Active</option>
+                    <option value="Inactive" className="text-black">Inactive</option>
                   </select>
                 </div>
                 <div className="mb-4">
@@ -407,8 +499,8 @@ const ManageCategories = () => {
                     }
                     required
                   >
-                    <option value="book">Book</option>
-                    <option value="accessory">Accessory</option>
+                    <option value="book" className="text-black">Book</option>
+                    <option value="accessory" className="text-black">Accessory</option>
                   </select>
                 </div>
                 <div className="flex justify-end gap-2">
@@ -447,7 +539,10 @@ const ManageCategories = () => {
                     className="mt-1 block w-full bg-white/10 border border-yellow-400/50 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 font-sans"
                     value={selectedCategory.categoryName || ""}
                     onChange={(e) =>
-                      setSelectedCategory({ ...selectedCategory, categoryName: e.target.value })
+                      setSelectedCategory({
+                        ...selectedCategory,
+                        categoryName: e.target.value,
+                      })
                     }
                   />
                 </div>
@@ -459,7 +554,10 @@ const ManageCategories = () => {
                     className="mt-1 block w-full bg-white/10 border border-yellow-400/50 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 font-sans"
                     value={selectedCategory.description || ""}
                     onChange={(e) =>
-                      setSelectedCategory({ ...selectedCategory, description: e.target.value })
+                      setSelectedCategory({
+                        ...selectedCategory,
+                        description: e.target.value,
+                      })
                     }
                   />
                 </div>
@@ -472,7 +570,10 @@ const ManageCategories = () => {
                     accept="image/*"
                     className="mt-1 block w-full bg-white/10 border border-yellow-400/50 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 font-sans file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-yellow-400/20 file:text-yellow-400 hover:file:bg-yellow-400/30"
                     onChange={(e) =>
-                      setSelectedCategory({ ...selectedCategory, categoryImage: e.target.files[0] || null })
+                      setSelectedCategory({
+                        ...selectedCategory,
+                        categoryImage: e.target.files[0] || null,
+                      })
                     }
                   />
                   {selectedCategory.categoryImg ? (
@@ -482,7 +583,9 @@ const ManageCategories = () => {
                       className="h-16 w-16 rounded-full object-cover mt-2"
                     />
                   ) : (
-                    <span className="text-sm text-yellow-400/70 font-sans mt-2">No Image</span>
+                    <span className="text-sm text-yellow-400/70 font-sans mt-2">
+                      No Image
+                    </span>
                   )}
                 </div>
                 <div className="mb-4">
@@ -493,11 +596,19 @@ const ManageCategories = () => {
                     className="mt-1 block w-full bg-white/10 border border-yellow-400/50 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 font-sans"
                     value={selectedCategory.status || "Active"}
                     onChange={(e) =>
-                      setSelectedCategory({ ...selectedCategory, status: e.target.value })
+                      setSelectedCategory({
+                        ...selectedCategory,
+                        status: e.target.value,
+                      })
                     }
                   >
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
+                    <option value="Active" className="text-black">
+                      {" "}
+                      Active
+                    </option>
+                    <option value="Inactive" className="text-black">
+                      Inactive
+                    </option>
                   </select>
                 </div>
                 <div className="mb-4">
@@ -508,11 +619,18 @@ const ManageCategories = () => {
                     className="mt-1 block w-full bg-white/10 border border-yellow-400/50 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 font-sans"
                     value={selectedCategory.type || "book"}
                     onChange={(e) =>
-                      setSelectedCategory({ ...selectedCategory, type: e.target.value })
+                      setSelectedCategory({
+                        ...selectedCategory,
+                        type: e.target.value,
+                      })
                     }
                   >
-                    <option value="book">Book</option>
-                    <option value="accessory">Accessory</option>
+                    <option value="book" className="text-black">
+                      Book
+                    </option>
+                    <option value="accessory" className="text-black">
+                      Accessory
+                    </option>
                   </select>
                 </div>
                 <div className="flex justify-end gap-2">
@@ -542,7 +660,11 @@ const ManageCategories = () => {
                 Delete Category
               </h2>
               <p className="text-sm text-white font-sans mb-6">
-                Are you sure you want to delete <span className="font-semibold">{selectedCategory.categoryName}</span>? This action cannot be undone.
+                Are you sure you want to delete{" "}
+                <span className="font-semibold">
+                  {selectedCategory.categoryName}
+                </span>
+                ? This action cannot be undone.
               </p>
               <div className="flex justify-end gap-2">
                 <button
@@ -572,23 +694,41 @@ const ManageCategories = () => {
               </h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-yellow-400 font-sans">Category Name</label>
-                  <p className="text-sm text-white font-sans">{selectedCategory.categoryName}</p>
+                  <label className="block text-sm font-medium text-yellow-400 font-sans">
+                    Category Name
+                  </label>
+                  <p className="text-sm text-white font-sans">
+                    {selectedCategory.categoryName}
+                  </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-yellow-400 font-sans">ID</label>
-                  <p className="text-sm text-white font-sans">{selectedCategory.categoryId}</p>
+                  <label className="block text-sm font-medium text-yellow-400 font-sans">
+                    ID
+                  </label>
+                  <p className="text-sm text-white font-sans">
+                    {selectedCategory.categoryId}
+                  </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-yellow-400 font-sans">Description</label>
-                  <p className="text-sm text-white font-sans">{selectedCategory.description}</p>
+                  <label className="block text-sm font-medium text-yellow-400 font-sans">
+                    Description
+                  </label>
+                  <p className="text-sm text-white font-sans">
+                    {selectedCategory.description}
+                  </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-yellow-400 font-sans">Type</label>
-                  <p className="text-sm text-white font-sans">{selectedCategory.type || "N/A"}</p>
+                  <label className="block text-sm font-medium text-yellow-400 font-sans">
+                    Type
+                  </label>
+                  <p className="text-sm text-white font-sans">
+                    {selectedCategory.type || "N/A"}
+                  </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-yellow-400 font-sans">Image</label>
+                  <label className="block text-sm font-medium text-yellow-400 font-sans">
+                    Image
+                  </label>
                   {selectedCategory.categoryImg ? (
                     <img
                       src={selectedCategory.categoryImg}
@@ -596,15 +736,21 @@ const ManageCategories = () => {
                       className="h-16 w-16 rounded-full object-cover"
                     />
                   ) : (
-                    <span className="text-sm text-yellow-400/70 font-sans">No Image</span>
+                    <span className="text-sm text-yellow-400/70 font-sans">
+                      No Image
+                    </span>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-yellow-400 font-sans">Status</label>
+                  <label className="block text-sm font-medium text-yellow-400 font-sans">
+                    Status
+                  </label>
                   <p className="text-sm text-white font-sans">
                     <span
                       className={`px-2 py-1 rounded-full ${
-                        selectedCategory.status === "Active" ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"
+                        selectedCategory.status === "Active"
+                          ? "bg-green-500/20 text-green-400"
+                          : "bg-red-500/20 text-red-400"
                       }`}
                     >
                       {selectedCategory.status}
