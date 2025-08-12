@@ -2595,13 +2595,12 @@
 
 // export default CheckoutDetails;
 
-
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Tag, ArrowLeft } from 'lucide-react';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Tag, ArrowLeft } from "lucide-react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const API_URL = "http://localhost:8080";
 
@@ -2611,50 +2610,56 @@ const CheckoutDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [billingDetails, setBillingDetails] = useState({
-    customerEmail: '',
-    firstName: '',
-    lastName: '',
-    address: '',
-    apartment: '',
-    city: '',
-    phoneNumber: '',
-    confirmPhoneNumber: '',
+    customerEmail: "",
+    firstName: "",
+    lastName: "",
+    address: "",
+    apartment: "",
+    city: "",
+    phoneNumber: "",
+    confirmPhoneNumber: "",
   });
-  const [shippingMethod, setShippingMethod] = useState('free');
+  const [shippingMethod, setShippingMethod] = useState("free");
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState({
-    cardNumber: '',
-    expiry: '',
-    csc: '',
+    cardNumber: "",
+    expiry: "",
+    csc: "",
   });
-  const [paymentError, setPaymentError] = useState('');
+  const [paymentError, setPaymentError] = useState("");
 
   useEffect(() => {
     const fetchCartAndCustomer = async () => {
-      const token = localStorage.getItem('token');
-      const userId = localStorage.getItem('userId');
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
       if (!token || !userId) {
-        setError('Please log in to proceed with checkout');
-        toast.warn('Please log in to proceed with checkout', {
-          position: 'top-right',
+        setError("Please log in to proceed with checkout");
+        toast.warn("Please log in to proceed with checkout", {
+          position: "top-right",
           autoClose: 3000,
         });
-        navigate('/login');
+        navigate("/login");
         return;
       }
 
       try {
         // Fetch cart items
-        const cartResponse = await axios.get(`${API_URL}/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }).catch(err => {
-          throw new Error(`Cart fetch failed: ${err.response?.status} - ${err.response?.data || err.message}`);
-        });
-        console.log('Cart response:', cartResponse.data);
+        const cartResponse = await axios
+          .get(`${API_URL}/${userId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .catch((err) => {
+            throw new Error(
+              `Cart fetch failed: ${err.response?.status} - ${
+                err.response?.data || err.message
+              }`
+            );
+          });
+        console.log("Cart response:", cartResponse.data);
         const cartItemsRaw = cartResponse.data.items || [];
 
         if (cartItemsRaw.length === 0) {
-          setError('Your cart is empty');
+          setError("Your cart is empty");
           setLoading(false);
           return;
         }
@@ -2664,14 +2669,14 @@ const CheckoutDetails = () => {
           cartItemsRaw.map(async (item) => {
             try {
               let product;
-              if (item.productType === 'Book') {
+              if (item.productType === "Book") {
                 product = await axios.get(
                   `${API_URL}/auth/getbookbyid/${item.productId}`,
                   {
                     headers: { Authorization: `Bearer ${token}` },
                   }
                 );
-              } else if (item.productType === 'Accessory') {
+              } else if (item.productType === "Accessory") {
                 product = await axios.get(
                   `${API_URL}/auth/getaccessorybyid/${item.productId}`,
                   {
@@ -2679,7 +2684,9 @@ const CheckoutDetails = () => {
                   }
                 );
               } else {
-                console.warn(`Invalid product type for item: ${item.productId}`);
+                console.warn(
+                  `Invalid product type for item: ${item.productId}`
+                );
                 return null;
               }
               const discount = product.data.discount || 0;
@@ -2688,7 +2695,7 @@ const CheckoutDetails = () => {
                 id: item.id,
                 productId: item.productId,
                 name:
-                  item.productType === 'Book'
+                  item.productType === "Book"
                     ? product.data.title
                     : product.data.itemName,
                 price: discountedPrice,
@@ -2696,7 +2703,7 @@ const CheckoutDetails = () => {
                 discount: discount,
                 quantity: item.quantity,
                 productType: item.productType,
-                image: product.data.image || 'https://via.placeholder.com/80',
+                image: product.data.image || "https://via.placeholder.com/80",
               };
             } catch (err) {
               console.error(
@@ -2712,38 +2719,44 @@ const CheckoutDetails = () => {
           (item) => item && item.name && item.price
         );
         if (validItems.length === 0) {
-          setError('Cart contains invalid items');
-          console.warn('All cart items filtered out due to missing data');
+          setError("Cart contains invalid items");
+          console.warn("All cart items filtered out due to missing data");
         }
         setCartItems(validItems);
 
         // Fetch customer details
-        const customerResponse = await axios.get(`${API_URL}/auth/getcustomerbyid/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }).catch(err => {
-          throw new Error(`Customer fetch failed: ${err.response?.status} - ${err.response?.data || err.message}`);
-        });
-        console.log('Customer response:', customerResponse.data);
+        const customerResponse = await axios
+          .get(`${API_URL}/auth/getcustomerbyid/${userId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .catch((err) => {
+            throw new Error(
+              `Customer fetch failed: ${err.response?.status} - ${
+                err.response?.data || err.message
+              }`
+            );
+          });
+        console.log("Customer response:", customerResponse.data);
         const customer = customerResponse.data;
         setBillingDetails((prev) => ({
           ...prev,
-          customerEmail: customer.customerEmail || '',
-          firstName: customer.customerName?.split(' ')[0] || '',
-          lastName: customer.customerName?.split(' ').slice(1).join(' ') || '',
-          address: customer.address || '',
-          phoneNumber: customer.customerPhone || '',
-          confirmPhoneNumber: customer.customerPhone || '',
+          customerEmail: customer.customerEmail || "",
+          firstName: customer.customerName?.split(" ")[0] || "",
+          lastName: customer.customerName?.split(" ").slice(1).join(" ") || "",
+          address: customer.address || "",
+          phoneNumber: customer.customerPhone || "",
+          confirmPhoneNumber: customer.customerPhone || "",
         }));
 
         setLoading(false);
       } catch (err) {
-        console.error('Fetch error:', err.message);
+        console.error("Fetch error:", err.message);
         setError(
           err.response?.status === 401
-            ? 'Session expired. Please log in again.'
-            : err.message || 'Failed to load cart or customer details'
+            ? "Session expired. Please log in again."
+            : err.message || "Failed to load cart or customer details"
         );
-        if (err.response?.status === 401) navigate('/login');
+        if (err.response?.status === 401) navigate("/login");
         setLoading(false);
       }
     };
@@ -2757,13 +2770,14 @@ const CheckoutDetails = () => {
 
   const handlePaymentInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'cardNumber') {
+    if (name === "cardNumber") {
       // Remove non-digits and spaces, then format with spaces every 4 digits
-      const cleanValue = value.replace(/\D/g, '').slice(0, 16);
-      const formattedValue = cleanValue
-        .match(/.{1,4}/g)
-        ?.join(' ')
-        .slice(0, 19) || cleanValue;
+      const cleanValue = value.replace(/\D/g, "").slice(0, 16);
+      const formattedValue =
+        cleanValue
+          .match(/.{1,4}/g)
+          ?.join(" ")
+          .slice(0, 19) || cleanValue;
       setPaymentDetails((prev) => ({ ...prev, [name]: formattedValue }));
     } else {
       setPaymentDetails((prev) => ({ ...prev, [name]: value }));
@@ -2785,20 +2799,20 @@ const CheckoutDetails = () => {
 
   const validatePaymentDetails = () => {
     const { cardNumber, expiry, csc } = paymentDetails;
-    const cleanCardNumber = cardNumber.replace(/\s/g, '');
+    const cleanCardNumber = cardNumber.replace(/\s/g, "");
     if (!/^\d{16}$/.test(cleanCardNumber)) {
-      setPaymentError('Card number must be 16 digits');
+      setPaymentError("Card number must be 16 digits");
       return false;
     }
     if (!/^(0[1-9]|1[0-2])\/[0-9]{2}$/.test(expiry)) {
-      setPaymentError('Expiry must be in MM/YY format');
+      setPaymentError("Expiry must be in MM/YY format");
       return false;
     }
     if (!/^\d{3,4}$/.test(csc)) {
-      setPaymentError('CVC must be 3 or 4 digits');
+      setPaymentError("CVC must be 3 or 4 digits");
       return false;
     }
-    setPaymentError('');
+    setPaymentError("");
     return true;
   };
 
@@ -2809,19 +2823,33 @@ const CheckoutDetails = () => {
   const handleConfirmPayment = async () => {
     if (!validatePaymentDetails()) {
       toast.error(paymentError, {
-        position: 'top-right',
+        position: "top-right",
         autoClose: 3000,
       });
       return;
     }
 
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
-    const { customerEmail, firstName, lastName, address, phoneNumber, confirmPhoneNumber } = billingDetails;
-    if (!customerEmail || !firstName || !lastName || !address || !phoneNumber || !confirmPhoneNumber) {
-      toast.error('Please fill in all required fields', {
-        position: 'top-right',
+    const {
+      customerEmail,
+      firstName,
+      lastName,
+      address,
+      phoneNumber,
+      confirmPhoneNumber,
+    } = billingDetails;
+    if (
+      !customerEmail ||
+      !firstName ||
+      !lastName ||
+      !address ||
+      !phoneNumber ||
+      !confirmPhoneNumber
+    ) {
+      toast.error("Please fill in all required fields", {
+        position: "top-right",
         autoClose: 3000,
       });
       setShowPaymentPopup(false);
@@ -2829,8 +2857,8 @@ const CheckoutDetails = () => {
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
-      toast.error('Please enter a valid email address', {
-        position: 'top-right',
+      toast.error("Please enter a valid email address", {
+        position: "top-right",
         autoClose: 3000,
       });
       setShowPaymentPopup(false);
@@ -2838,8 +2866,8 @@ const CheckoutDetails = () => {
     }
 
     if (phoneNumber !== confirmPhoneNumber) {
-      toast.error('Phone numbers do not match', {
-        position: 'top-right',
+      toast.error("Phone numbers do not match", {
+        position: "top-right",
         autoClose: 3000,
       });
       setShowPaymentPopup(false);
@@ -2847,8 +2875,8 @@ const CheckoutDetails = () => {
     }
 
     if (!/^\+\d{10,15}$/.test(phoneNumber)) {
-      toast.error('Please enter a valid phone number (e.g., +94123456789)', {
-        position: 'top-right',
+      toast.error("Please enter a valid phone number (e.g., +94123456789)", {
+        position: "top-right",
         autoClose: 3000,
       });
       setShowPaymentPopup(false);
@@ -2856,8 +2884,8 @@ const CheckoutDetails = () => {
     }
 
     if (cartItems.length === 0) {
-      toast.error('Your cart is empty or contains invalid items', {
-        position: 'top-right',
+      toast.error("Your cart is empty or contains invalid items", {
+        position: "top-right",
         autoClose: 3000,
       });
       setShowPaymentPopup(false);
@@ -2881,26 +2909,29 @@ const CheckoutDetails = () => {
       const categoryId = await (async () => {
         const firstItem = cartItems[0];
         try {
-          if (firstItem.productType === 'Book') {
+          if (firstItem.productType === "Book") {
             const book = await axios.get(
               `${API_URL}/auth/getbookbyid/${firstItem.productId}`,
               {
                 headers: { Authorization: `Bearer ${token}` },
               }
             );
-            return book.data.categoryId || 'Books';
-          } else if (firstItem.productType === 'Accessory') {
+            return book.data.categoryId || "Books";
+          } else if (firstItem.productType === "Accessory") {
             const accessory = await axios.get(
               `${API_URL}/auth/getaccessorybyid/${firstItem.productId}`,
               {
                 headers: { Authorization: `Bearer ${token}` },
               }
             );
-            return accessory.data.categoryId || 'Accessories';
+            return accessory.data.categoryId || "Accessories";
           }
         } catch (err) {
-          console.error('Failed to fetch categoryId:', err.response?.data || err.message);
-          return firstItem.productType === 'Book' ? 'Books' : 'Accessories';
+          console.error(
+            "Failed to fetch categoryId:",
+            err.response?.data || err.message
+          );
+          return firstItem.productType === "Book" ? "Books" : "Accessories";
         }
       })();
 
@@ -2909,23 +2940,25 @@ const CheckoutDetails = () => {
         customerName: `${firstName} ${lastName}`,
         customerEmail,
         customerPhone: phoneNumber,
-        address: `${address}${billingDetails.apartment ? ', ' + billingDetails.apartment : ''}`,
-        orderDate: new Date().toISOString().split('T')[0],
+        address: `${address}${
+          billingDetails.apartment ? ", " + billingDetails.apartment : ""
+        }`,
+        orderDate: new Date().toISOString().split("T")[0],
         categoryId,
-        productIds: cartItems.map(item => item.productId),
+        productIds: cartItems.map((item) => item.productId),
         productTypes,
         productQuantities, // Added productQuantities field
         totalPrice: parseFloat(calculateTotalPrice()),
-        status: 'Pending',
+        status: "Pending",
       };
-      console.log('Order payload:', order);
+      console.log("Order payload:", order);
 
       const response = await axios.post(`${API_URL}/auth/create`, order, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('Order created:', response.data);
-      toast.success('Payment Successful! Order placed successfully!', {
-        position: 'top-right',
+      console.log("Order created:", response.data);
+      toast.success("Payment Successful! Order placed successfully!", {
+        position: "top-right",
         autoClose: 3000,
       });
 
@@ -2935,39 +2968,47 @@ const CheckoutDetails = () => {
       setCartItems([]);
 
       setTimeout(() => {
-        const cartUpdateEvent = new Event('cartUpdated');
+        const cartUpdateEvent = new Event("cartUpdated");
         window.dispatchEvent(cartUpdateEvent);
-        console.log('Dispatched cartUpdated event');
+        console.log("Dispatched cartUpdated event");
       }, 1000);
 
       setShowPaymentPopup(false);
-      navigate('/customerDashboard');
+      navigate("/customerDashboard");
     } catch (err) {
-      console.error('Order creation error:', err.response?.data || err.message);
+      console.error("Order creation error:", err.response?.data || err.message);
       toast.error(
         err.response?.status === 401
-          ? 'Session expired. Please log in again.'
-          : err.response?.data?.message || 'Failed to place order',
-        { position: 'top-right', autoClose: 3000 }
+          ? "Session expired. Please log in again."
+          : err.response?.data?.message || "Failed to place order",
+        { position: "top-right", autoClose: 3000 }
       );
-      if (err.response?.status === 401) navigate('/login');
+      if (err.response?.status === 401) navigate("/login");
       setShowPaymentPopup(false);
     }
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-screen text-gray-600 font-sans">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-600 font-sans">
+        Loading...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="flex items-center justify-center h-screen text-red-600 font-sans">{error}</div>;
+    return (
+      <div className="flex items-center justify-center h-screen text-red-600 font-sans">
+        {error}
+      </div>
+    );
   }
 
   return (
     <div className="max-w-7xl mx-auto p-6 mt-6 grid md:grid-cols-3 gap-8 font-sans">
       <ToastContainer />
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/cartpage")}
         className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-amber-700 text-white px-6 py-3 rounded-lg shadow-md hover:from-yellow-300 hover:to-amber-800 hover:scale-105 transition-all duration-300 text-base font-semibold mb-6"
       >
         <ArrowLeft className="w-5 h-5" />
@@ -2978,13 +3019,17 @@ const CheckoutDetails = () => {
       {showPaymentPopup && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-[#2D2D2D] p-8 rounded-lg shadow-md w-full max-w-lg min-h-[400px]">
-            <h2 className="text-lg font-semibold mb-4 text-white">Enter Payment Details</h2>
+            <h2 className="text-lg font-semibold mb-4 text-white">
+              Enter Payment Details
+            </h2>
             {paymentError && (
               <p className="text-white mb-4 text-sm">{paymentError}</p>
             )}
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1 text-white">Card Number *</label>
+                <label className="block text-sm font-medium mb-1 text-white">
+                  Card Number *
+                </label>
                 <input
                   type="text"
                   name="cardNumber"
@@ -2998,7 +3043,9 @@ const CheckoutDetails = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1 text-white">Expiry (MM/YY) *</label>
+                  <label className="block text-sm font-medium mb-1 text-white">
+                    Expiry (MM/YY) *
+                  </label>
                   <input
                     type="text"
                     name="expiry"
@@ -3011,7 +3058,9 @@ const CheckoutDetails = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1 text-white">CVC *</label>
+                  <label className="block text-sm font-medium mb-1 text-white">
+                    CVC *
+                  </label>
                   <input
                     type="text"
                     name="csc"
@@ -3103,7 +3152,9 @@ const CheckoutDetails = () => {
               />
             </div>
             <div>
-              <label className="block font-medium mb-1">Apartment, suite, etc. (optional)</label>
+              <label className="block font-medium mb-1">
+                Apartment, suite, etc. (optional)
+              </label>
               <input
                 type="text"
                 name="apartment"
@@ -3129,7 +3180,9 @@ const CheckoutDetails = () => {
               />
             </div>
             <div>
-              <label className="block font-medium mb-1">Re–type Phone Number *</label>
+              <label className="block font-medium mb-1">
+                Re–type Phone Number *
+              </label>
               <input
                 type="text"
                 name="confirmPhoneNumber"
@@ -3143,18 +3196,25 @@ const CheckoutDetails = () => {
         </form>
       </div>
 
-<div className="bg-gray-50 p-6 rounded-lg shadow-sm space-y-4 w-[500px] mx-auto">
-          <h3 className="text-xl font-semibold border-b pb-2">Your Order</h3>
+      <div className="bg-gray-50 p-6 rounded-lg shadow-sm space-y-4 w-[500px] mx-auto">
+        <h3 className="text-xl font-semibold border-b pb-2">Your Order</h3>
         <div className="space-y-2 text-sm">
           {cartItems.length === 0 ? (
-            <p className="text-gray-600">Your cart is empty or contains invalid items</p>
+            <p className="text-gray-600">
+              Your cart is empty or contains invalid items
+            </p>
           ) : (
             cartItems.map((item) => (
               <div key={item.id} className="flex justify-between">
-                <span>{item.name || 'Unknown Product'} × {item.quantity}</span>
+                <span>
+                  {item.name || "Unknown Product"} × {item.quantity}
+                </span>
                 <span className="font-medium">
-                  Rs. {(item.price * item.quantity).toFixed(2)} {item.discount > 0 && (
-                    <span className="text-gray-500 line-through">Rs. {(item.originalPrice * item.quantity).toFixed(2)}</span>
+                  Rs. {(item.price * item.quantity).toFixed(2)}{" "}
+                  {item.discount > 0 && (
+                    <span className="text-gray-500 line-through">
+                      Rs. {(item.originalPrice * item.quantity).toFixed(2)}
+                    </span>
                   )}
                 </span>
               </div>
@@ -3175,7 +3235,7 @@ const CheckoutDetails = () => {
                 type="radio"
                 name="shipping"
                 value="pickup"
-                checked={shippingMethod === 'pickup'}
+                checked={shippingMethod === "pickup"}
                 onChange={handleShippingChange}
                 className="mr-2"
               />
@@ -3186,7 +3246,7 @@ const CheckoutDetails = () => {
                 type="radio"
                 name="shipping"
                 value="free"
-                checked={shippingMethod === 'free'}
+                checked={shippingMethod === "free"}
                 onChange={handleShippingChange}
                 className="mr-2"
               />
@@ -3211,7 +3271,11 @@ const CheckoutDetails = () => {
         <div className="flex items-center justify-between pt-4">
           <span className="text-sm">Pay Online</span>
           <div className="flex gap-1">
-            <img src="https://www.payhere.lk/downloads/images/payhere_long_banner.png" alt="PayHere" className="h-6" />
+            <img
+              src="https://www.payhere.lk/downloads/images/payhere_long_banner.png"
+              alt="PayHere"
+              className="h-6"
+            />
           </div>
         </div>
       </div>
