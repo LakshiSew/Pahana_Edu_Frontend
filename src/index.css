@@ -31,13 +31,11 @@ html, body, #root {
     color: #fbbf24 !important; /* Tailwind yellow-500 */
   }
 
-  /* Move the left arrow further left (adds space to the right) */
   .slick-prev {
     left: -40px !important;
     z-index: 10;
   }
 
-  /* Move the right arrow further right (adds space to the left) */
   .slick-next {
     right: -40px !important;
     z-index: 10;
